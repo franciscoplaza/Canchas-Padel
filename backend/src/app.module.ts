@@ -10,19 +10,19 @@ import { Reserva, ReservaSchema } from './reserva/reserva.schema';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }), // Carga variables del .env
-    MongooseModule.forRoot(process.env.MONGO_URI!), // el ! le dice a TS que no es undefined - Conexión a MongoDB
-    // Aquí luego podés importar tus módulos, como ReservaModule, CanchaModule, etc.
+    // ConfigModule para cargar el archivo .env
+    ConfigModule.forRoot({
+      isGlobal: true,  // Hace las variables de entorno accesibles globalmente
+    }),
 
-    MongooseModule.forFeature([
-      { name: Usuario.name, schema: UsuarioSchema },
-      { name: Cancha.name, schema: CanchaSchema },
-      { name: Reserva.name, schema: ReservaSchema },
-    ]),
-    
+    // Verifica si la variable de entorno está siendo cargada
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
-
+export class AppModule {
+  constructor() {
+    // Aquí colocamos el console.log fuera del array de imports
+    console.log('MONGO_URI:', process.env.MONGO_URI);
+  }
+}
