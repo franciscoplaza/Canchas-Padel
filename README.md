@@ -8,7 +8,7 @@
 2. Desde CMD o Terminal de Visual, dentro de la carpeta Backend escribir "npm install" (debería verse del tipo C:\.....\backend> npm install) (Hacerlo dentro de la carpeta backend necesariamente, no en cualquier otro lugar del CMD)
 
 **FRONTEND (REACT con TypeScript)**
-1. Desde CMD o Terminal de Visual, dentro de la carpeta Backend escribir "npm install" (debería verse del tipo C:\.....\frontend> npm install) (Hacerlo dentro de la carpeta frontend necesariamente, no en cualquier otro lugar del CMD)
+1. Desde CMD o Terminal de Visual, dentro de la carpeta Frontend escribir "npm install" (debería verse del tipo C:\.....\frontend> npm install) (Hacerlo dentro de la carpeta frontend necesariamente, no en cualquier otro lugar del CMD)
 
 - Luego de esto ya se puede comenzar a trabajar :D
 
