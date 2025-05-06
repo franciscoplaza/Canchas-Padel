@@ -18,6 +18,7 @@ import { Reserva, ReservaSchema } from './reserva/reserva.schema';
       { name: Usuario.name, schema: UsuarioSchema },
       { name: Cancha.name, schema: CanchaSchema },
       { name: Reserva.name, schema: ReservaSchema },
+      
     ]),
     
   ],
@@ -25,4 +26,6 @@ import { Reserva, ReservaSchema } from './reserva/reserva.schema';
   providers: [AppService],
 })
 export class AppModule {}
+
+
 
