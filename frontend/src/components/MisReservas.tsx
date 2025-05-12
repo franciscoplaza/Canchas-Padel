@@ -1,6 +1,7 @@
-// src/components/MisReservas.tsx
 import { useEffect, useState } from 'react';
-import { obtenerReservasUsuario } from '../services/reservaService'; 
+import { obtenerReservasUsuario } from '../services/reservaService';
+import './MisReservas.css';  // Si el archivo CSS está en la misma carpeta
+
 type Reserva = {
   _id: string;
   fecha_hora: string;
@@ -21,7 +22,6 @@ const MisReservas = ({ usuarioId }: Props) => {
     const cargarReservas = async () => {
       try {
         const data = await obtenerReservasUsuario(usuarioId);
-        console.log('Reservas cargadas:', data);  // Verificación de datos recibidos
         setReservas(data);
       } catch (error) {
         console.error('Error al cargar reservas:', error);
@@ -32,19 +32,21 @@ const MisReservas = ({ usuarioId }: Props) => {
   }, [usuarioId]);
 
   return (
-    <div>
+    <div className="reservas-container">
       <h2>Mis Reservas</h2>
       {reservas.length === 0 ? (
         <p>No tienes reservas.</p>
       ) : (
-        <ul>
-          {reservas.map((reserva) => (
-            <li key={reserva._id}>
-              <strong>Fecha:</strong> {new Date(reserva.fecha_hora).toLocaleString()} <br />
-              <strong>Cancha:</strong> {reserva.id_cancha.id_cancha} - ${reserva.id_cancha.precio}
-            </li>
+        <div className="reservas-list">
+          {reservas.map((reserva, index) => (
+            <div key={reserva._id} className="reserva-card">
+              <p><strong>Reserva {index + 1}:</strong></p>
+              <p><strong>Fecha:</strong> {new Date(reserva.fecha_hora).toLocaleString()}</p>
+              <p><strong>Cancha:</strong> {reserva.id_cancha.id_cancha}</p>
+              <p><strong>Precio:</strong> ${reserva.id_cancha.precio}</p>
+            </div>
           ))}
-        </ul>
+        </div>
       )}
     </div>
   );

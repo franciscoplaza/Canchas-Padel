@@ -1,0 +1,27 @@
+/* Justificar el texto en los párrafos */
+.reserva-card {
+  text-align: justify; /* Justifica el texto de los párrafos */
+  width: 100%;         /* Asegura que la tarjeta ocupe todo el ancho disponible */
+  padding: 10px;       /* Un poco de espacio alrededor del texto */
+  display: flex;
+  flex-direction: column;
+  gap: 10px;           /* Espacio entre los párrafos */
+}
+
+.reserva-card p {
+  margin: 0;           /* Elimina los márgenes del párrafo */
+  line-height: 1.5;     /* Mejora la legibilidad */
+}
+
+.reserva-card p strong {
+  display: inline;       /* Deja que los elementos strong se alineen con el texto */
+  font-size: 1.1em;      /* Un poco más grande para destacar */
+}
+
+/* Alinea a la izquierda los títulos y no los centra */
+.reserva-card p strong.title {
+  text-align: left;     /* Alinea el texto del título a la izquierda */
+  font-size: 1.2em;      /* Títulos más grandes */
+  font-weight: bold;     /* Hace los títulos en negrita */
+  margin-bottom: 5px;    /* Espacio debajo del título */
+}
