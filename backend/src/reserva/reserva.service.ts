@@ -18,6 +18,7 @@ export class ReservaService {
   }
 
   async findByUsuario(usuarioId: string): Promise<Reserva[]> {
+    console.log('Buscando reservas para usuario ID:', usuarioId);
     return this.reservaModel.find({ id_usuario: usuarioId }).populate('id_cancha');
   }
 }

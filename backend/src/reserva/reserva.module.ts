@@ -9,8 +9,8 @@ import { CanchaModule } from '../cancha/cancha.module';
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Reserva.name, schema: ReservaSchema }]),
-    UsuarioModule, // Importamos el módulo de Usuario para poder usar el usuario en las reservas
-    CanchaModule, // Importamos el módulo de Cancha para que las reservas puedan estar asociadas a canchas
+    UsuarioModule,
+    CanchaModule, 
   ],
   providers: [ReservaService],
   controllers: [ReservaController],
