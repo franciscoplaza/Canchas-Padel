@@ -7,27 +7,27 @@ const Login = () => {
   const [mensajeError, setMensajeError] = useState<string>('');
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    try {
-      // Hacemos la solicitud al backend para iniciar sesión
-      const response = await axios.post('http://localhost:3000/usuario/login', {
-        nombreUsuario,
-        contraseña,
-      });
+  try {
+    const response = await axios.post('http://localhost:3000/auth/login', {
+      nombreUsuario,
+      contraseña,
+    });
 
-      // Si el inicio de sesión es exitoso
-      alert(response.data.mensaje);
-      // Redirigir al usuario a otra página si es necesario
-    } catch (error: unknown) {
-        // Verificar que el error es del tipo AxiosError
-        if (axios.isAxiosError(error)) {
-          setMensajeError(error.response?.data?.message || 'Ocurrió un error');
-        } else {
-          setMensajeError('Error desconocido');
-        }
-      }
-    };
+    // Almacena el token en localStorage
+    localStorage.setItem('token', response.data.token);
+    alert(response.data.mensaje);
+    // Redirigir al usuario a otra página si es necesario
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      setMensajeError(error.response?.data?.message || 'Ocurrió un error');
+    } else {
+      setMensajeError('Error desconocido');
+    }
+  }
+};
+
 
   return (
     <div>

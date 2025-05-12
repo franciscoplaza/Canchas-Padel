@@ -24,6 +24,8 @@ export const ReservasAdmin = () => {
 
   useEffect(() => {
     const fetchReservas = async () => {
+      const token = localStorage.getItem('token');
+
       if (!token) {
         setError('No hay token, inicia sesión.');
         setLoading(false);
@@ -45,7 +47,6 @@ export const ReservasAdmin = () => {
       }
     };
 
-    fetchReservas();
   }, []);
 
   if (loading) return <p>Cargando reservas...</p>;

@@ -1,28 +1,16 @@
 import { Controller, Post, Body, UnauthorizedException } from '@nestjs/common';
 import { UsuarioService } from './usuario.service';
+import { AuthService } from 'src/auth/auth.service';
 
 @Controller('usuario')
 export class UsuarioController {
-  constructor(private readonly usuarioService: UsuarioService) {}
+  constructor(
+    private readonly usuarioService: UsuarioService,
+    private readonly authService: AuthService, // Inyecta AuthService aquí
+  ) {}
 
   @Post('login')
   async login(@Body() body: { nombreUsuario: string; contraseña: string }) {
-    const { nombreUsuario, contraseña } = body;
-
-    const usuario = await this.usuarioService.buscarPorNombre(nombreUsuario);
-
-    if (!usuario || usuario.contraseña !== contraseña) {
-      throw new UnauthorizedException('Usuario o contraseña incorrectos');
-    }
-
-    return {
-      mensaje: 'Inicio de sesión exitoso',
-      usuario: {
-        id: usuario._id,
-        nombreUsuario: usuario.nombreUsuario,
-        correo: usuario.correo,
-        rol: usuario.rol,
-      },
-    };
+    return this.authService.login(body.nombreUsuario, body.contraseña);
   }
 }

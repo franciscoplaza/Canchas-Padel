@@ -10,7 +10,7 @@ export class ReservaController {
   constructor(private readonly reservaService: ReservaService) {}
 
   @Get('admin')
-  @UseGuards(AuthGuard, RolesGuard)
+  @UseGuards(AuthGuard, RolesGuard) // Protege esta ruta
   @Roles('admin')
   getAllReservas() {
     return this.reservaService.getAllReservas();
