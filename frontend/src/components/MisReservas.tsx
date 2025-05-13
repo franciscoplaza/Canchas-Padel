@@ -1,3 +1,4 @@
+// frontend/src/components/MisReservas.tsx
 import { useEffect, useState } from 'react';
 import { obtenerReservasUsuario } from '../services/reservaService';
 import './MisReservas.css';  // Si el archivo CSS está en la misma carpeta

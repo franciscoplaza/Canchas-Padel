@@ -1,4 +1,4 @@
-// src/services/reservaService.ts
+// frontend/src/services/reservaService.ts
 export async function obtenerReservasUsuario(usuarioId: string) {
   const response = await fetch(`http://localhost:3000/reserva/mias?usuarioId=${usuarioId}`);
   if (!response.ok) {

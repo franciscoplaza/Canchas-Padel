@@ -1,3 +1,4 @@
+// backend/src/reserva/reserva.module.ts
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Reserva, ReservaSchema } from './reserva.schema';
