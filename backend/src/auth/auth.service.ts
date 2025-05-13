@@ -3,35 +3,58 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Usuario, UsuarioDocument } from '../usuario/usuario.schema';
+import { Usuario } from '../usuario/usuario.schema';
 
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectModel(Usuario.name) private usuarioModel: Model<UsuarioDocument>,
+    @InjectModel(Usuario.name) private usuarioModel: Model<Usuario>,
     private jwtService: JwtService,
   ) {}
 
   async validarUsuario(correo: string, contraseña: string): Promise<any> {
-    const usuario = await this.usuarioModel.findOne({ correo });
-    if (usuario && usuario.contraseña === contraseña) {
-      // Puedes usar bcrypt si luego deseas mayor seguridad
-      const { contraseña, ...result } = usuario.toObject();
-      return result;
+    console.log(`Intentando login con correo: ${correo}`); // Log para depuración
+    
+    const usuario = await this.usuarioModel.findOne({ correo }).lean().exec();
+    
+    if (!usuario) {
+      console.log('Usuario no encontrado');
+      return null;
     }
-    return null;
+
+    console.log('Usuario encontrado:', usuario); // Verifica los datos del usuario
+    
+    // Comparación directa de contraseña (sin encriptar por ahora)
+    if (usuario.contraseña !== contraseña) {
+      console.log('Contraseña incorrecta');
+      return null;
+    }
+
+    const { contraseña: _, ...result } = usuario; // Remueve la contraseña del resultado
+    return result;
   }
 
   async login(correo: string, contraseña: string) {
-    const usuario = await this.validarUsuario(correo, contraseña);
-    if (!usuario) {
-      throw new UnauthorizedException('Correo o contraseña inválidos');
-    }
-
-    const payload = { correo: usuario.correo, sub: usuario._id };
-    return {
-      access_token: this.jwtService.sign(payload),
-      usuario,
-    };
+  const usuario = await this.validarUsuario(correo, contraseña);
+  if (!usuario) {
+    throw new UnauthorizedException('Credenciales inválidas');
   }
+
+  // Usamos el RUT como identificador único
+  const payload = { 
+    correo: usuario.correo,
+    sub: usuario.rut, // Cambiado de _id a rut
+    rol: usuario.rol
+  };
+  
+  return {
+    access_token: this.jwtService.sign(payload),
+    usuario: {
+      rut: usuario.rut,
+      nombreUsuario: usuario.nombreUsuario,
+      correo: usuario.correo,
+      rol: usuario.rol
+    }
+  };
+}
 }

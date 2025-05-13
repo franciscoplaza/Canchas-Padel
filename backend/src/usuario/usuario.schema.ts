@@ -1,4 +1,4 @@
-// src/usuario/usuario.schema.ts
+// backend/src/usuario/usuario.schema.ts
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 

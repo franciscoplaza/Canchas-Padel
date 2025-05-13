@@ -11,6 +11,11 @@ export class AuthController {
     @Body('correo') correo: string,
     @Body('contraseña') contraseña: string,
   ) {
-    return this.authService.login(correo, contraseña);
+    try {
+      return await this.authService.login(correo, contraseña);
+    } catch (error) {
+      console.error('Error en login:', error);
+      throw error;
+    }
   }
 }
