@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
+import './MisReservas.css';
 interface Reserva {
   _id: string;
   fecha_hora: string;

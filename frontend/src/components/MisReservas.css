@@ -1,27 +1,45 @@
-/* Justificar el texto en los párrafos */
-.reserva-card {
-  text-align: justify; /* Justifica el texto de los párrafos */
-  width: 100%;         /* Asegura que la tarjeta ocupe todo el ancho disponible */
-  padding: 10px;       /* Un poco de espacio alrededor del texto */
+/* Estilos para usuario */
+.user-reservas-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.user-header {
+  margin-bottom: 25px;
+  text-align: center;
+}
+
+.user-header h1 {
+  color: #16a085;
+  font-size: 2rem;
+}
+
+.user-subtitle {
+  color: #7f8c8d;
+  font-style: italic;
+}
+
+.reservas-list {
+  list-style: none;
+  padding: 0;
+}
+
+.reserva-item {
+  background: white;
+  margin-bottom: 15px;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.reserva-info {
   display: flex;
-  flex-direction: column;
-  gap: 10px;           /* Espacio entre los párrafos */
+  margin-bottom: 8px;
 }
 
-.reserva-card p {
-  margin: 0;           /* Elimina los márgenes del párrafo */
-  line-height: 1.5;     /* Mejora la legibilidad */
-}
-
-.reserva-card p strong {
-  display: inline;       /* Deja que los elementos strong se alineen con el texto */
-  font-size: 1.1em;      /* Un poco más grande para destacar */
-}
-
-/* Alinea a la izquierda los títulos y no los centra */
-.reserva-card p strong.title {
-  text-align: left;     /* Alinea el texto del título a la izquierda */
-  font-size: 1.2em;      /* Títulos más grandes */
-  font-weight: bold;     /* Hace los títulos en negrita */
-  margin-bottom: 5px;    /* Espacio debajo del título */
+.reserva-label {
+  font-weight: bold;
+  min-width: 80px;
+  color: #2c3e50;
 }

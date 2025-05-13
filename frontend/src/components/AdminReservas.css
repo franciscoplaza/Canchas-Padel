@@ -1,0 +1,55 @@
+/* Estilos generales */
+.loading, .error {
+  padding: 20px;
+  text-align: center;
+  font-size: 1.2rem;
+}
+
+.error {
+  color: #e74c3c;
+}
+
+/* Estilos para admin */
+.admin-reservas-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.admin-header {
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.admin-header h1 {
+  color: #2c3e50;
+  font-size: 2.2rem;
+  margin-bottom: 5px;
+}
+
+.admin-subtitle {
+  color: #7f8c8d;
+  font-size: 1.1rem;
+}
+
+.reservas-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.reservas-table th {
+  background-color: #3498db;
+  color: white;
+  padding: 12px;
+  text-align: left;
+}
+
+.reservas-table td {
+  padding: 10px;
+  border-bottom: 1px solid #ecf0f1;
+}
+
+.reservas-table tr:hover {
+  background-color: #f5f5f5;
+}
