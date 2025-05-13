@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const [nombreUsuario, setNombreUsuario] = useState<string>('');
   const [contraseña, setContraseña] = useState<string>('');
   const [mensajeError, setMensajeError] = useState<string>('');
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
@@ -17,7 +19,7 @@ const Login = () => {
 
     // Almacena el token en localStorage
     localStorage.setItem('token', response.data.token);
-    alert(response.data.mensaje);
+    navigate('/admin/reservas');
     // Redirigir al usuario a otra página si es necesario
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
