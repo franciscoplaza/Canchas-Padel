@@ -18,4 +18,12 @@ export class AuthController {
       throw error;
     }
   }
+  //--------------------------------------------
+  @Post('registro')
+  async registro(
+    @Body() usuarioData: any
+  ) {
+    return this.authService.registrarUsuario(usuarioData);
+  }
+  //---------------------------------------------
 }

@@ -9,9 +9,11 @@ import { AuthController } from './auth.controller';
 import { Usuario, UsuarioSchema } from '../usuario/usuario.schema';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-
+import { ConflictException, BadRequestException } from '@nestjs/common';
 @Module({
   imports: [
+    ConflictException,
+    BadRequestException,
     ConfigModule,
     PassportModule,
     MongooseModule.forFeature([{ name: Usuario.name, schema: UsuarioSchema }]),
