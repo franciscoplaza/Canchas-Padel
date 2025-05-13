@@ -1,21 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-interface Cancha {
+interface CanchaInfo {
   id_cancha: string;
-  precio: number;
 }
 
 interface Reserva {
   _id: string;
   fecha_hora: string;
-  id_cancha: Cancha;
+  id_cancha: string; // Solo necesitamos el ID directo
 }
 
-const MisReservas: React.FC = () => {
+const MisReservas = () => {
   const [reservas, setReservas] = useState<Reserva[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string>('');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -33,18 +32,11 @@ const MisReservas: React.FC = () => {
           },
         });
 
-        if (!response.ok) {
-          throw new Error('No se pudieron obtener las reservas');
-        }
-
-        const data: Reserva[] = await response.json();
+        if (!response.ok) throw new Error('Error al obtener reservas');
+        const data = await response.json();
         setReservas(data);
       } catch (err) {
-        if (err instanceof Error) {
-          setError(err.message);
-        } else {
-          setError('Ocurrió un error desconocido');
-        }
+        setError(err instanceof Error ? err.message : 'Error desconocido');
       } finally {
         setLoading(false);
       }
@@ -57,18 +49,14 @@ const MisReservas: React.FC = () => {
   if (error) return <div>Error: {error}</div>;
 
   return (
-    <div>
-      <h2>Mis Reservas</h2>
-      <ul>
-        {reservas.map((reserva) => (
-          <li key={reserva._id}>
-            <p>Fecha: {new Date(reserva.fecha_hora).toLocaleString()}</p>
-            <p>Cancha: {reserva.id_cancha.id_cancha}</p>
-            <p>Precio: ${reserva.id_cancha.precio}</p>
-          </li>
-        ))}
-      </ul>
-    </div>
+    <ul>
+  {reservas.map((reserva) => (
+    <li key={reserva._id}>
+      <p>Fecha: {new Date(reserva.fecha_hora).toLocaleString()}</p>
+      <p>Cancha: {reserva.id_cancha}</p> {/* Muestra directamente el ID */}
+    </li>
+  ))}
+</ul>
   );
 };
 

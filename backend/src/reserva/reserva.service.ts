@@ -15,6 +15,26 @@ export class ReservaService {
   }
 
   async obtenerTodasLasReservas() {
-    return this.reservaModel.find().exec();
+    return this.reservaModel.aggregate([
+      {
+        $lookup: {
+          from: 'usuarios',
+          localField: 'id_usuario',
+          foreignField: 'rut',
+          as: 'usuario'
+        }
+      },
+      {
+        $unwind: '$usuario'
+      },
+      {
+        $project: {
+          _id: 1,
+          fecha_hora: 1,
+          'id_cancha': 1,
+          'usuario.nombreUsuario': 1
+        }
+      }
+    ]).exec();
   }
 }

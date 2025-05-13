@@ -11,10 +11,10 @@ export class Reserva {
   @Prop({ type: Date, required: true })
   fecha_hora: Date;
 
-  @Prop({ type: String, ref: 'Usuario', required: true })
+  @Prop({ type: String, ref: 'Usuario', required: true }) // Referencia por RUT
   id_usuario: string; // Cambiado de Usuario a string
 
-  @Prop({ type: String, ref: 'Cancha', required: true })
+  @Prop({ type: String, required: true }) // Guardamos directamente el ID de cancha
   id_cancha: string; // Cambiado de Cancha a string
 }
 
