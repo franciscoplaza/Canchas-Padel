@@ -11,6 +11,6 @@ import { AuthModule } from '../auth/auth.module'; // Importa el módulo de auten
   imports: [forwardRef(() =>AuthModule), MongooseModule.forFeature([{ name: Usuario.name, schema: UsuarioSchema }])], // Asegúrate de importar el módulo de autenticación
   controllers: [UsuarioController],
   providers: [UsuarioService, AuthService], // Asegúrate de incluir AuthService aquí si no usas un módulo
-  exports: [UsuarioService],
+  exports: [UsuarioService, MongooseModule],
 })
 export class UsuarioModule {}

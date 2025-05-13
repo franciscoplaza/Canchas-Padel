@@ -6,16 +6,17 @@ import { Cancha } from '../cancha/cancha.schema';
 
 export type ReservaDocument = Reserva & Document;
 
+// reserva.schema.ts
 @Schema()
 export class Reserva {
   @Prop({ type: Date, required: true })
   fecha_hora: Date;
 
-  @Prop({ type: Types.ObjectId, ref: 'Usuario', required: true })
-  id_usuario: Usuario;
+  @Prop({ type: String, required: true }) // Cambiado a String
+  id_usuario: string; // ← Ya no es una referencia
 
-  @Prop({ type: Types.ObjectId, ref: 'Cancha', required: true })
-  id_cancha: Cancha;
+  @Prop({ type: String, required: true }) // Cambiado a String
+  id_cancha: string; // ← Ya no es una referencia
 }
 
 export const ReservaSchema = SchemaFactory.createForClass(Reserva);

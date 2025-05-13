@@ -1,0 +1,3 @@
+### Obtener reservas (requiere token)
+GET http://localhost:3000/reservas/admin
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4MjIxYmYxZGJhZjFkM2Y3NTY5YTNhZCIsIm5vbWJyZVVzdWFyaW8iOiJhZG1pbiIsInJvbCI6ImFkbWluIiwiaWF0IjoxNzQ3MTEwNDAwLCJleHAiOjE3NDcxMTA0NjB9.2XeT2RRc-wmUiwpDcvrWNZ7uz-akkClftWBiPiKdQgA

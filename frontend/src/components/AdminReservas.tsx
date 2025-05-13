@@ -20,8 +20,6 @@ export const ReservasAdmin = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  const token = localStorage.getItem('token');
-
   useEffect(() => {
     const fetchReservas = async () => {
       const token = localStorage.getItem('token');
@@ -32,6 +30,8 @@ export const ReservasAdmin = () => {
         return;
       }
 
+      console.log("Token siendo enviado:", token);
+
       try {
         const res = await axios.get('http://localhost:3000/reservas/admin', {
           headers: {
@@ -39,14 +39,14 @@ export const ReservasAdmin = () => {
           },
         });
         setReservas(res.data);
-      } catch (err) {
-        console.error('Error al obtener reservas:', err);
-        setError('No se pudieron cargar las reservas.');
+      } catch (err: any) {
+        console.error('Error detallado:', err.response?.data || err.message);
+        setError(`Error: ${err.response?.data?.message || 'No se pudieron cargar las reservas'}`);
       } finally {
         setLoading(false);
       }
     };
-
+    fetchReservas();
   }, []);
 
   if (loading) return <p>Cargando reservas...</p>;
