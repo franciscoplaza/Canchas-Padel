@@ -3,20 +3,13 @@ import { useNavigate } from 'react-router-dom';
 
 interface UsuarioInfo {
   nombreUsuario: string;
-  correo: string;
-}
-
-interface CanchaInfo {
-  id_cancha: string;
 }
 
 interface Reserva {
   _id: string;
   fecha_hora: string;
   id_cancha: string;
-  usuario: {
-    nombreUsuario: string;
-  };
+  usuario: UsuarioInfo;
 }
 
 const AdminReservas = () => {
@@ -55,28 +48,38 @@ const AdminReservas = () => {
     fetchReservas();
   }, [navigate]);
 
-  if (loading) return <div>Cargando...</div>;
-  if (error) return <div>Error: {error}</div>;
+  if (loading) return <div className="loading">Cargando...</div>;
+  if (error) return <div className="error">Error: {error}</div>;
 
   return (
-        <table>
-      <thead>
-        <tr>
-          <th>Fecha y Hora</th>
-          <th>Usuario</th>
-          <th>Cancha</th>
-        </tr>
-      </thead>
-      <tbody>
-        {reservas.map((reserva) => (
-          <tr key={reserva._id}>
-            <td>{new Date(reserva.fecha_hora).toLocaleString()}</td>
-            <td>{reserva.usuario.nombreUsuario}</td>
-            <td>{reserva.id_cancha}</td> {/* Muestra directamente el ID de cancha */}
-          </tr>
-        ))}
-      </tbody>
-    </table>
+    <div className="admin-reservas-container">
+      <header className="admin-header">
+        <h1>Sistema de Reservas</h1>
+        <p className="admin-subtitle">Panel de administración</p>
+      </header>
+      
+      <div className="reservas-content">
+        <h2>Todas las reservas</h2>
+        <table className="reservas-table">
+          <thead>
+            <tr>
+              <th>Fecha y Hora</th>
+              <th>Usuario</th>
+              <th>Cancha</th>
+            </tr>
+          </thead>
+          <tbody>
+            {reservas.map((reserva) => (
+              <tr key={reserva._id}>
+                <td>{new Date(reserva.fecha_hora).toLocaleString()}</td>
+                <td>{reserva.usuario.nombreUsuario}</td>
+                <td>{reserva.id_cancha}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
   );
 };
 

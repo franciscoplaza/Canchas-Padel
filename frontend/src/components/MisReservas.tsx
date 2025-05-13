@@ -1,14 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-interface CanchaInfo {
-  id_cancha: string;
-}
-
 interface Reserva {
   _id: string;
   fecha_hora: string;
-  id_cancha: string; // Solo necesitamos el ID directo
+  id_cancha: string;
 }
 
 const MisReservas = () => {
@@ -45,18 +41,33 @@ const MisReservas = () => {
     fetchReservas();
   }, [navigate]);
 
-  if (loading) return <div>Cargando...</div>;
-  if (error) return <div>Error: {error}</div>;
+  if (loading) return <div className="loading">Cargando...</div>;
+  if (error) return <div className="error">Error: {error}</div>;
 
   return (
-    <ul>
-  {reservas.map((reserva) => (
-    <li key={reserva._id}>
-      <p>Fecha: {new Date(reserva.fecha_hora).toLocaleString()}</p>
-      <p>Cancha: {reserva.id_cancha}</p> {/* Muestra directamente el ID */}
-    </li>
-  ))}
-</ul>
+    <div className="user-reservas-container">
+      <header className="user-header">
+        <h1>Mis Reservas</h1>
+        <p className="user-subtitle">Tus reservas activas</p>
+      </header>
+
+      <div className="reservas-list-container">
+        <ul className="reservas-list">
+          {reservas.map((reserva) => (
+            <li key={reserva._id} className="reserva-item">
+              <div className="reserva-info">
+                <span className="reserva-label">Fecha:</span>
+                <span>{new Date(reserva.fecha_hora).toLocaleString()}</span>
+              </div>
+              <div className="reserva-info">
+                <span className="reserva-label">Cancha:</span>
+                <span>{reserva.id_cancha}</span>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
   );
 };
 
