@@ -145,3 +145,71 @@
 .canchas-table td:nth-child(3) {
   width: 45%;
 }
+
+.header-actions {
+  margin: 20px 0;
+}
+
+.btn-agregar {
+  background-color: #2ecc71;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.3s;
+}
+
+.btn-agregar:hover {
+  background-color: #27ae60;
+}
+
+.add-form {
+  background-color: #f8f9fa;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.add-form h3 {
+  margin-top: 0;
+  color: #2c3e50;
+}
+
+.form-row {
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+}
+
+.form-row label {
+  width: 100px;
+  font-weight: 600;
+  color: #34495e;
+}
+
+.form-row input {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.error-message {
+  color: #e74c3c;
+  margin-top: 10px;
+  padding: 8px;
+  background-color: #fadbd8;
+  border-radius: 4px;
+  font-size: 14px;
+}

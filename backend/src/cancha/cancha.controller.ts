@@ -10,8 +10,11 @@ export class CanchaController {
 
   @Post()
   @UseGuards(JwtAuthGuard)
-  create(@Body() data: Partial<Cancha>) {
-    return this.canchaService.create(data);
+  async create(
+    @Body('numero') numero: number,
+    @Body('precio') precio: number
+  ) {
+    return this.canchaService.create({ numero, precio });
   }
 
   @Get()
