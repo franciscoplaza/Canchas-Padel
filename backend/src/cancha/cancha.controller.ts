@@ -1,5 +1,5 @@
 // backend/src/cancha/cancha.controller.ts
-import { Controller, Get, Post, Body, Delete, Param, UseGuards, NotFoundException } from '@nestjs/common';
+import { Controller, Get, Post, Put, Body, Delete, Param, UseGuards, NotFoundException } from '@nestjs/common';
 import { CanchaService } from './cancha.service';
 import { Cancha } from './cancha.schema';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -27,5 +27,14 @@ export class CanchaController {
       throw new NotFoundException(`Cancha con ID ${id} no encontrada`);
     }
     return { message: 'Cancha eliminada exitosamente' };
+  }
+
+  @Put(':id')
+  @UseGuards(JwtAuthGuard)
+  async updatePrecio(
+    @Param('id') id: string,
+    @Body('precio') precio: number
+  ) {
+    return this.canchaService.updatePrecio(id, precio);
   }
 }

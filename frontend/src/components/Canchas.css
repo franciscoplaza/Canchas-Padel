@@ -78,3 +78,70 @@
   color: #e74c3c;
   margin-top: 50px;
 }
+
+.precio-input {
+  width: 80px;
+  padding: 5px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.acciones-cell {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-modificar {
+  background-color: #f39c12;
+  color: white;
+  padding: 6px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-modificar:hover {
+  background-color: #e67e22;
+}
+
+.btn-guardar {
+  background-color: #2ecc71;
+  color: white;
+  padding: 6px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-guardar:hover {
+  background-color: #27ae60;
+}
+
+.btn-cancelar {
+  background-color: #95a5a6;
+  color: white;
+  padding: 6px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-cancelar:hover {
+  background-color: #7f8c8d;
+}
+
+/* Ajustar el ancho de las columnas */
+.canchas-table th:nth-child(1),
+.canchas-table td:nth-child(1) {
+  width: 30%;
+}
+
+.canchas-table th:nth-child(2),
+.canchas-table td:nth-child(2) {
+  width: 25%;
+}
+
+.canchas-table th:nth-child(3),
+.canchas-table td:nth-child(3) {
+  width: 45%;
+}

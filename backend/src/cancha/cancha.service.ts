@@ -24,4 +24,19 @@ export class CanchaService {
     }
     return { message: 'Cancha eliminada exitosamente' };
   }
+
+  async updatePrecio(id: string, precio: number): Promise<Cancha> {
+    const canchaActualizada = await this.canchaModel.findByIdAndUpdate(
+      id,
+      { precio },
+      { new: true } // Devuelve el documento actualizado
+    ).exec();
+
+    if (!canchaActualizada) {
+      throw new NotFoundException(`Cancha con ID ${id} no encontrada`);
+    }
+
+    return canchaActualizada;
+  }
+  
 }
