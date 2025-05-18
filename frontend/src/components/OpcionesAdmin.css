@@ -1,0 +1,84 @@
+/* OpcionesAdmin.css */
+.admin-container {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  text-align: center;
+}
+
+.admin-header {
+  margin-bottom: 50px;
+}
+
+.admin-header h1 {
+  color: #2c3e50;
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+}
+
+.admin-subtitle {
+  color: #7f8c8d;
+  font-size: 1.2rem;
+}
+
+.admin-options {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+.admin-btn {
+  min-width: 250px;
+  padding: 20px 30px;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.admin-btn:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.canchas-btn {
+  background-color: #3498db;
+}
+
+.canchas-btn:hover {
+  background-color: #2980b9;
+}
+
+.reservas-btn {
+  background-color: #2ecc71;
+}
+
+.reservas-btn:hover {
+  background-color: #27ae60;
+}
+
+.admin-btn i {
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .admin-options {
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .admin-btn {
+    width: 100%;
+  }
+}

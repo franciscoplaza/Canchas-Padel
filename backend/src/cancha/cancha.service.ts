@@ -1,5 +1,5 @@
-// src/cancha/cancha.service.ts
-import { Injectable } from '@nestjs/common';
+// backend/src/cancha/cancha.service.ts
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Cancha, CanchaDocument } from './cancha.schema';
 import { Model } from 'mongoose';
@@ -14,6 +14,14 @@ export class CanchaService {
   }
 
   async findAll(): Promise<Cancha[]> {
-    return this.canchaModel.find();
+    return this.canchaModel.find().exec();
+  }
+
+  async remove(id: string): Promise<{ message: string }> {
+    const result = await this.canchaModel.findByIdAndDelete(id).exec();
+    if (!result) {
+      throw new NotFoundException(`Cancha con ID ${id} no encontrada`);
+    }
+    return { message: 'Cancha eliminada exitosamente' };
   }
 }

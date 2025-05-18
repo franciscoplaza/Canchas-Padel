@@ -1,0 +1,80 @@
+/* Canchas.css */
+.canchas-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.canchas-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.canchas-header h1 {
+  color: #2c3e50;
+  margin-bottom: 5px;
+}
+
+.canchas-subtitle {
+  color: #7f8c8d;
+  font-size: 1.1rem;
+}
+
+.canchas-list-container {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
+
+.canchas-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.canchas-table th, 
+.canchas-table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #ecf0f1;
+}
+
+.canchas-table th {
+  background-color: #f8f9fa;
+  color: #2c3e50;
+  font-weight: 600;
+}
+
+.canchas-table tr:hover {
+  background-color: #f8f9fa;
+}
+
+.delete-btn {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+.delete-btn:hover {
+  background-color: #c0392b;
+}
+
+.loading {
+  text-align: center;
+  font-size: 18px;
+  color: #3498db;
+  margin-top: 50px;
+}
+
+.error {
+  text-align: center;
+  font-size: 18px;
+  color: #e74c3c;
+  margin-top: 50px;
+}

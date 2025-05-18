@@ -33,7 +33,7 @@ const Login: React.FC = () => {
       localStorage.setItem('usuario', JSON.stringify(data.usuario));
 
       if (data.usuario.rol === 'admin') {
-        navigate('/admin/reservas');
+        navigate('/admin');
       } else {
         navigate('/mis-reservas');
       }
