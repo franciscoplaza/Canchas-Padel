@@ -1,0 +1,84 @@
+/* CrearReserva.css */
+
+.crear-reserva-container {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.crear-reserva-container h1 {
+  text-align: center;
+  color: #2c3e50;
+  margin-bottom: 1.5rem;
+}
+
+.crear-reserva-container form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  font-weight: 600;
+  color: #34495e;
+  font-size: 1rem;
+}
+
+.form-group input,
+.form-group select {
+  padding: 0.8rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+button[type="submit"] {
+  background-color: #2ecc71;
+  color: white;
+  padding: 0.8rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-top: 1rem;
+}
+
+button[type="submit"]:hover {
+  background-color: #27ae60;
+}
+
+/* Estilos para dispositivos móviles */
+@media (max-width: 640px) {
+  .crear-reserva-container {
+    margin: 1rem;
+    padding: 1rem;
+  }
+  
+  .crear-reserva-container h1 {
+    font-size: 1.5rem;
+  }
+  
+  .form-group input,
+  .form-group select {
+    padding: 0.7rem;
+  }
+}

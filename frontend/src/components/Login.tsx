@@ -38,7 +38,7 @@ const Login: React.FC = () => {
       if (data.usuario.rol === "admin") {
         navigate("/admin")
       } else {
-        navigate("/mis-reservas")
+        navigate("/usuario")
       }
     } catch (err) {
       if (err instanceof Error) {

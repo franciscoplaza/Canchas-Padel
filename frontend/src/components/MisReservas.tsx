@@ -170,7 +170,7 @@ const MisReservas = () => {
             </svg>
             <h2>No tienes reservas activas</h2>
             <p>Realiza una reserva para comenzar a utilizar nuestras instalaciones deportivas.</p>
-            <button className="primary-btn" onClick={() => navigate("/reservar")}>
+            <button className="primary-btn" onClick={() => navigate("/reservar-cancha")}>
               Hacer una reserva
             </button>
           </div>
@@ -310,7 +310,7 @@ const MisReservas = () => {
           <button className="secondary-btn" onClick={() => navigate("/")}>
             Volver al Inicio
           </button>
-          <button className="primary-btn" onClick={() => navigate("/reservar")}>
+          <button className="primary-btn" onClick={() => navigate("/reservar-cancha")}>
             Nueva Reserva
           </button>
         </div>

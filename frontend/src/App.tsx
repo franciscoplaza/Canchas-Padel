@@ -6,6 +6,8 @@ import MisReservas from './components/MisReservas';
 import AdminReservas from './components/AdminReservas';
 import Canchas from './components/Canchas';
 import OpcionesAdmin from './components/OpcionesAdmin';
+import CrearReserva from './components/CrearReserva';
+import OpcionesUsuario from './components/OpcionesUsuario';
 
 //----------------------------
 import Registro from './components/Registro';
@@ -19,12 +21,15 @@ function App() {
           <Route path="/registro" element={<Registro />} />
 
           <Route path="/login" element={<Login />} />
+          <Route path="/usuario" element={<OpcionesUsuario />} />
+          <Route path="/reservar-cancha" element={<CrearReserva />} />
           <Route path="/mis-reservas" element={<MisReservas />} />
 
           <Route path="/admin" element={<OpcionesAdmin />} />
           <Route path="/admin/reservas" element={<AdminReservas />} />
           <Route path="/" element={<Navigate to="/login" />} />
           <Route path="/admin/canchas" element={<Canchas />} />
+          
         </Routes>
       </div>
     </Router>
