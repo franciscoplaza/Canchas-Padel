@@ -48,6 +48,38 @@ const OpcionesAdmin = () => {
           </div>
 
           <div className="admin-card">
+            <div className="card-icon equipamiento-icon">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="32"
+                height="32"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M4 22h16"></path>
+                <path d="M5 18h14"></path>
+                <path d="M17 14H7"></path>
+                <path d="M15 10H9"></path>
+                <path d="M12 6h0"></path>
+              </svg>
+            </div>
+            <div className="card-content">
+              <h2 className="card-title">Equipamiento</h2>
+              <p className="card-description">
+                Administre los artículos disponibles.
+              </p>
+              <button onClick={() => navigate("/admin/equipamiento")} className="admin-btn equipamiento-btn">
+                Gestionar Equipamiento
+              </button>
+            </div>
+          </div>
+
+
+          <div className="admin-card">
             <div className="card-icon reservas-icon">
               <svg
                 xmlns="http://www.w3.org/2000/svg"

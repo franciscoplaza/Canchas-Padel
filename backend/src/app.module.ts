@@ -11,6 +11,7 @@ import { Reserva, ReservaSchema } from './reserva/reserva.schema';
 import { ReservaModule } from './reserva/reserva.module';
 import { UsuarioModule } from './usuario/usuario.module';
 import { CanchaModule } from './cancha/cancha.module';
+import { EquipamientoModule } from './equipamiento/equipamiento.module'; 
 
 @Module({
   imports: [
@@ -21,7 +22,8 @@ import { CanchaModule } from './cancha/cancha.module';
     ConfigModule.forRoot(),
     ReservaModule,    // Asegúrate de que ReservaModule está aquí
     UsuarioModule,    // Agrega UsuarioModule
-    CanchaModule,     
+    CanchaModule,
+    EquipamientoModule,     
     MongooseModule.forFeature([
       { name: Usuario.name, schema: UsuarioSchema },
       { name: Cancha.name, schema: CanchaSchema },

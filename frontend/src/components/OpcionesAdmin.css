@@ -104,6 +104,11 @@ body {
   color: #1e8e3e;
 }
 
+.equipamiento-icon {
+  background-color: #fce8e6;
+  color: #d93025;
+}
+
 .card-title {
   font-size: 22px;
   font-weight: 500;
@@ -151,6 +156,14 @@ body {
 
 .reservas-btn:hover {
   background-color: #188033;
+}
+
+.equipamiento-btn {
+  background-color: #d93025;
+}
+
+.equipamiento-btn:hover {
+  background-color: #c5221f;
 }
 
 /* Stats Section */

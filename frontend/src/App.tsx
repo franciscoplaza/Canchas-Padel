@@ -8,6 +8,7 @@ import Canchas from './components/Canchas';
 import OpcionesAdmin from './components/OpcionesAdmin';
 import CrearReserva from './components/CrearReserva';
 import OpcionesUsuario from './components/OpcionesUsuario';
+import GestionarEquipamiento from './components/GestionarEquipamiento';
 
 //----------------------------
 import Registro from './components/Registro';
@@ -29,6 +30,7 @@ function App() {
           <Route path="/admin/reservas" element={<AdminReservas />} />
           <Route path="/" element={<Navigate to="/login" />} />
           <Route path="/admin/canchas" element={<Canchas />} />
+          <Route path="/admin/equipamiento" element={<GestionarEquipamiento />} />
           
         </Routes>
       </div>
