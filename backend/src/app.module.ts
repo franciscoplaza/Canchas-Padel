@@ -11,6 +11,9 @@ import { Reserva, ReservaSchema } from './reserva/reserva.schema';
 import { ReservaModule } from './reserva/reserva.module';
 import { UsuarioModule } from './usuario/usuario.module';
 import { CanchaModule } from './cancha/cancha.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { NotificationsModule } from './notificaciones/notificaciones.module';
+import { ReminderModule } from './reminder/reminder.module';
 
 @Module({
   imports: [
@@ -18,10 +21,13 @@ import { CanchaModule } from './cancha/cancha.module';
     MongooseModule.forRoot(process.env.MONGO_URI!), // el ! le dice a TS que no es undefined - Conexión a MongoDB
     // Aquí luego podés importar tus módulos, como ReservaModule, CanchaModule, etc.
     AuthModule,
+    ScheduleModule.forRoot(),
     ConfigModule.forRoot(),
     ReservaModule,    // Asegúrate de que ReservaModule está aquí
     UsuarioModule,    // Agrega UsuarioModule
     CanchaModule,     
+    NotificationsModule,
+    ReminderModule,
     MongooseModule.forFeature([
       { name: Usuario.name, schema: UsuarioSchema },
       { name: Cancha.name, schema: CanchaSchema },

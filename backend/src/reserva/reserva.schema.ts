@@ -16,6 +16,9 @@ export class Reserva {
 
   @Prop({ type: String, required: true }) // Guardamos directamente el ID de cancha
   id_cancha: string; // Cambiado de Cancha a string
+
+  @Prop({ default: false }) // 
+  recordatorioEnviado: boolean;
 }
 
 export const ReservaSchema = SchemaFactory.createForClass(Reserva);
