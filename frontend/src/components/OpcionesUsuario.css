@@ -88,13 +88,18 @@
 }
 
 .reservar-icon {
-  background-color: #e8f0fe;
+  background-color: #d7dbf3;
   color: #1a73e8;
 }
 
 .reservas-icon {
   background-color: #e6f4ea;
   color: #1e8e3e;
+}
+
+.saldo-icon {
+  background-color: #f5f7f6;
+  color: #55f724;
 }
 
 .card-title {

@@ -83,7 +83,7 @@ const OpcionesUsuario = () => {
           </div>
 
           <div className="user-card">
-            <div className="card-icon reservas-icon">
+            <div className="card-icon saldo-icon">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="32"
@@ -95,10 +95,10 @@ const OpcionesUsuario = () => {
                 strokeLinecap="round"
                 strokeLinejoin="round"
               >
-                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                <line x1="16" y1="2" x2="16" y2="6"></line>
-                <line x1="8" y1="2" x2="8" y2="6"></line>
-                <line x1="3" y1="10" x2="21" y2="10"></line>
+                <rect x="2" y="6" width="20" height="12" rx="2" ry="2"></rect>
+                <line x1="12" y1="12" x2="12" y2="12"></line>
+                <path d="M8 12h.01"></path>
+                <path d="M16 12h.01"></path>
               </svg>
             </div>
             <div className="card-content">
