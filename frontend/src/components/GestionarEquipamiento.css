@@ -1,6 +1,6 @@
 /* GestionarEquipamiento.css */
 .equipamiento-container {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
@@ -41,6 +41,33 @@
 .equipamiento-subtitle {
   color: #7f8c8d;
   margin-bottom: 20px;
+}
+
+/* Barra de búsqueda simplificada */
+.busqueda-simple {
+  margin: 0 auto 20px auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  max-width: 500px;
+}
+
+.input-busqueda {
+  width: 100%;
+  padding: 10px 15px;
+  border: 2px solid #0056b3;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.boton-limpiar {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 4px;
+  cursor: pointer;
 }
 
 .equipamiento-actions {
@@ -107,7 +134,8 @@
   margin-top: 20px;
 }
 
-.cancel-btn, .save-btn {
+.cancel-btn,
+.save-btn {
   padding: 8px 16px;
   border-radius: 4px;
   cursor: pointer;
@@ -202,7 +230,10 @@
   flex-wrap: wrap;
 }
 
-.edit-btn, .delete-btn, .save-btn, .cancel-btn {
+.edit-btn,
+.delete-btn,
+.save-btn,
+.cancel-btn {
   padding: 6px 12px;
   border-radius: 4px;
   cursor: pointer;
@@ -242,7 +273,8 @@
   background-color: #218838;
 }
 
-.stock-input, .costo-input {
+.stock-input,
+.costo-input {
   width: 80px;
   padding: 5px;
   border: 1px solid #ddd;
@@ -275,8 +307,12 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .error-container {
@@ -341,3 +377,29 @@
 .editing-input-row label {
   min-width: 80px;
 }
+
+/* Responsive para la barra de búsqueda */
+@media (max-width: 2000px) {
+  
+  .equipamiento-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .acciones-cell {
+    flex-direction: column;
+  }
+
+  .edit-btn,
+  .delete-btn,
+  .save-btn,
+  .cancel-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+.busqueda-simple {
+    flex-direction: column;
+    width: 1500px;
+    height: 60px;
+  } 
+

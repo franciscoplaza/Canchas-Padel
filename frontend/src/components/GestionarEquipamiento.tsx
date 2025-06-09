@@ -17,16 +17,17 @@ const GestionarEquipamiento = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
   const [editingId, setEditingId] = useState<string | null>(null)
+  const [searchTerm, setSearchTerm] = useState("")
   const [editData, setEditData] = useState({
     stock: 0,
-    costo: 0
+    costo: 0,
   })
   const [showAddForm, setShowAddForm] = useState(false)
   const [newEquipamiento, setNewEquipamiento] = useState({
     nombre: "",
     stock: "",
     tipo: "",
-    costo: ""
+    costo: "",
   })
   const navigate = useNavigate()
 
@@ -56,6 +57,14 @@ const GestionarEquipamiento = () => {
     fetchEquipamientos()
   }, [navigate])
 
+  // Función para filtrar equipamientos
+  const filteredEquipamientos = equipamientos.filter((equipamiento) => {
+    const searchLower = searchTerm.toLowerCase()
+    return (
+      equipamiento.nombre.toLowerCase().includes(searchLower) || equipamiento.tipo.toLowerCase().includes(searchLower)
+    )
+  })
+
   const handleEliminar = async (id: string) => {
     if (!window.confirm("¿Estás seguro de eliminar este equipamiento?")) return
 
@@ -77,7 +86,7 @@ const GestionarEquipamiento = () => {
     setEditingId(equipamiento._id)
     setEditData({
       stock: equipamiento.stock,
-      costo: equipamiento.costo
+      costo: equipamiento.costo,
     })
   }
 
@@ -101,7 +110,7 @@ const GestionarEquipamiento = () => {
         },
         body: JSON.stringify({
           stock: editData.stock,
-          costo: editData.costo
+          costo: editData.costo,
         }),
       })
 
@@ -121,10 +130,12 @@ const GestionarEquipamiento = () => {
   }
 
   const agregarEquipamiento = async () => {
-    if (!newEquipamiento.nombre.trim() || 
-        newEquipamiento.stock === "" || 
-        !newEquipamiento.tipo.trim() || 
-        newEquipamiento.costo === "") {
+    if (
+      !newEquipamiento.nombre.trim() ||
+      newEquipamiento.stock === "" ||
+      !newEquipamiento.tipo.trim() ||
+      newEquipamiento.costo === ""
+    ) {
       window.alert("Error: Todos los campos son obligatorios")
       return
     }
@@ -154,7 +165,7 @@ const GestionarEquipamiento = () => {
           nombre: newEquipamiento.nombre,
           stock: stock,
           tipo: newEquipamiento.tipo,
-          costo: costo
+          costo: costo,
         }),
       })
 
@@ -174,7 +185,7 @@ const GestionarEquipamiento = () => {
         nombre: "",
         stock: "",
         tipo: "",
-        costo: ""
+        costo: "",
       })
 
       window.alert(
@@ -237,6 +248,9 @@ const GestionarEquipamiento = () => {
           <p className="equipamiento-subtitle">Gestione el equipamiento disponible en el sistema</p>
         </div>
 
+        {/* Barra de búsqueda simplificada */}
+       
+
         <div className="equipamiento-actions">
           {!showAddForm ? (
             <button onClick={() => setShowAddForm(true)} className="add-equipamiento-btn">
@@ -264,7 +278,7 @@ const GestionarEquipamiento = () => {
                 <input
                   type="text"
                   value={newEquipamiento.nombre}
-                  onChange={(e) => setNewEquipamiento({...newEquipamiento, nombre: e.target.value})}
+                  onChange={(e) => setNewEquipamiento({ ...newEquipamiento, nombre: e.target.value })}
                   placeholder="Ej: Pelotas de tenis"
                 />
               </div>
@@ -273,7 +287,7 @@ const GestionarEquipamiento = () => {
                 <input
                   type="text"
                   value={newEquipamiento.tipo}
-                  onChange={(e) => setNewEquipamiento({...newEquipamiento, tipo: e.target.value})}
+                  onChange={(e) => setNewEquipamiento({ ...newEquipamiento, tipo: e.target.value })}
                   placeholder="Ej: Deportivo"
                 />
               </div>
@@ -283,7 +297,7 @@ const GestionarEquipamiento = () => {
                   type="number"
                   min="1"
                   value={newEquipamiento.stock}
-                  onChange={(e) => setNewEquipamiento({...newEquipamiento, stock: e.target.value})}
+                  onChange={(e) => setNewEquipamiento({ ...newEquipamiento, stock: e.target.value })}
                   placeholder="Ej: 10"
                 />
               </div>
@@ -293,7 +307,7 @@ const GestionarEquipamiento = () => {
                   type="number"
                   min="1"
                   value={newEquipamiento.costo}
-                  onChange={(e) => setNewEquipamiento({...newEquipamiento, costo: e.target.value})}
+                  onChange={(e) => setNewEquipamiento({ ...newEquipamiento, costo: e.target.value })}
                   placeholder="Ej: 5000"
                 />
               </div>
@@ -318,17 +332,34 @@ const GestionarEquipamiento = () => {
 
         <div className="equipamiento-stats">
           <div className="stat-card">
-            <div className="stat-value">{equipamientos.length}</div>
-            <div className="stat-label">Total Items</div>
+            <div className="stat-value">{filteredEquipamientos.length}</div>
+            <div className="stat-label">{searchTerm ? "Items Encontrados" : "Total Items"}</div>
           </div>
           <div className="stat-card">
-            <div className="stat-value">{equipamientos.reduce((acc, eq) => acc + eq.stock, 0)}</div>
-            <div className="stat-label">Total Unidades</div>
+            <div className="stat-value">{filteredEquipamientos.reduce((acc, eq) => acc + eq.stock, 0)}</div>
+            <div className="stat-label">{searchTerm ? "Unidades Encontradas" : "Total Unidades"}</div>
           </div>
           <div className="stat-card">
-            <div className="stat-value">${equipamientos.reduce((acc, eq) => acc + (eq.costo * eq.stock), 0).toLocaleString()}</div>
-            <div className="stat-label">Valor Total</div>
+            <div className="stat-value">
+              ${filteredEquipamientos.reduce((acc, eq) => acc + eq.costo * eq.stock, 0).toLocaleString()}
+            </div>
+            <div className="stat-label">{searchTerm ? "Valor Encontrado" : "Valor Total"}</div>
           </div>
+        </div>
+
+          <div className="busqueda-simple">
+          <input
+            type="text"
+            placeholder="Buscar por nombre o tipo..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="input-busqueda"
+          />
+          {searchTerm && (
+            <button onClick={() => setSearchTerm("")} className="boton-limpiar">
+              Limpiar
+            </button>
+          )}
         </div>
 
         <div className="table-container">
@@ -343,8 +374,8 @@ const GestionarEquipamiento = () => {
               </tr>
             </thead>
             <tbody>
-              {equipamientos.length > 0 ? (
-                equipamientos.map((equipamiento) => (
+              {filteredEquipamientos.length > 0 ? (
+                filteredEquipamientos.map((equipamiento) => (
                   <tr key={equipamiento._id}>
                     <td>{equipamiento.nombre}</td>
                     <td>{equipamiento.tipo}</td>
@@ -354,7 +385,7 @@ const GestionarEquipamiento = () => {
                           type="number"
                           min="0"
                           value={editData.stock}
-                          onChange={(e) => setEditData({...editData, stock: Number(e.target.value)})}
+                          onChange={(e) => setEditData({ ...editData, stock: Number(e.target.value) })}
                           className="stock-input"
                         />
                       ) : (
@@ -368,7 +399,7 @@ const GestionarEquipamiento = () => {
                           min="0"
                           step="0.01"
                           value={editData.costo}
-                          onChange={(e) => setEditData({...editData, costo: Number(e.target.value)})}
+                          onChange={(e) => setEditData({ ...editData, costo: Number(e.target.value) })}
                           className="costo-input"
                         />
                       ) : (
@@ -458,7 +489,9 @@ const GestionarEquipamiento = () => {
               ) : (
                 <tr>
                   <td colSpan={5} className="no-results">
-                    No hay equipamiento disponible. ¡Agrega un nuevo item!
+                    {searchTerm
+                      ? `No se encontraron equipamientos que coincidan con "${searchTerm}"`
+                      : "No hay equipamiento disponible. ¡Agrega un nuevo item!"}
                   </td>
                 </tr>
               )}
