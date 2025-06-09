@@ -11,6 +11,7 @@ import { Reserva, ReservaSchema } from './reserva/reserva.schema';
 import { ReservaModule } from './reserva/reserva.module';
 import { UsuarioModule } from './usuario/usuario.module';
 import { CanchaModule } from './cancha/cancha.module';
+import { SaldoModule } from './saldo/saldo.module';
 
 @Module({
   imports: [
@@ -27,7 +28,7 @@ import { CanchaModule } from './cancha/cancha.module';
       { name: Cancha.name, schema: CanchaSchema },
       { name: Reserva.name, schema: ReservaSchema },
     ]),
-    
+    SaldoModule,
   ],
   controllers: [AppController],
   providers: [AppService],

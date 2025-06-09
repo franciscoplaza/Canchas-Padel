@@ -12,6 +12,7 @@ import OpcionesUsuario from './components/OpcionesUsuario';
 //----------------------------
 import Registro from './components/Registro';
 //------------------------
+import SaldoUsuario from './components/SaldoUsuario';
 
 function App() {
   return (
@@ -24,7 +25,7 @@ function App() {
           <Route path="/usuario" element={<OpcionesUsuario />} />
           <Route path="/reservar-cancha" element={<CrearReserva />} />
           <Route path="/mis-reservas" element={<MisReservas />} />
-
+          <Route path="/saldo" element={<SaldoUsuario />} />
           <Route path="/admin" element={<OpcionesAdmin />} />
           <Route path="/admin/reservas" element={<AdminReservas />} />
           <Route path="/" element={<Navigate to="/login" />} />
