@@ -166,7 +166,7 @@ const SaldoUsuario = () => {
         </div>
 
         <div className="user-actions">
-          <button className="secondary-btn" onClick={() => navigate("/opciones")}>
+          <button className="secondary-btn" onClick={() => navigate("/usuario")}>
             Volver
           </button>
           <button className="logout-btn" onClick={() => {
