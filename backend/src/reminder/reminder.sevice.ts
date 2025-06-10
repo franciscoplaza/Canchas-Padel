@@ -30,7 +30,7 @@ export class ReminderService {
         $lt: proximaHora,
       },
       // Nombre de campo corregido
-      reminderSent: false, 
+      recordatorioEnviado: false, 
     }).exec();
 
     if (reservas.length === 0) {
@@ -51,7 +51,7 @@ export class ReminderService {
           await reserva.save();
 
           // 👇 3. Corrección de los campos en el log 👇
-          this.logger.log(`Recordatorio enviado a ${usuario.correo} para la reserva del ${reserva.fecha_hora.toLocaleDateString()}.`);
+          this.logger.log(`Recordatorio enviado a ${usuario.correo} para la reserva del ${new Date(reserva.fecha).toLocaleDateString()} a las ${reserva.hora}.`);
         } catch (error) {
           // 👇 4. Corrección del campo en el log de error 👇
           this.logger.error(`Error al enviar recordatorio a ${usuario.correo}`, error);

@@ -14,8 +14,8 @@ export class NotificationsService {
       template: './reminder', // Nombre del archivo de la plantilla (sin .hbs)
       context: {
         nombre: usuario.nombreUsuario,
-        fecha: reserva.fecha_hora.toLocaleDateString('es-ES'),
-        hora: reserva.fecha_hora,
+        fecha: reserva.fecha.toLocaleDateString('es-ES'),
+        hora: reserva.hora,
         id_cancha: reserva.id_cancha,
       },
     });

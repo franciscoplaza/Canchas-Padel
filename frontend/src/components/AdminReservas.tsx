@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-// Importamos la función y el tipo de dato desde nuestro servicio
 import { getAllReservas, IReserva } from '../services/reservaService';
 import './AdminReservas.css';
 
@@ -12,10 +11,17 @@ const AdminReservas: React.FC = () => {
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    const usuarioActual = JSON.parse(localStorage.getItem('usuario') || '{}');
+    const usuarioString = localStorage.getItem('usuario');
 
-    // Verificamos si es admin antes de hacer nada
-    if (!token || usuarioActual.role !== 'admin') {
+    if (!token || !usuarioString) {
+      navigate('/login');
+      return;
+    }
+
+    const usuarioActual = JSON.parse(usuarioString);
+    
+    // Usamos 'rol' para que coincida con tu localStorage
+    if (usuarioActual.rol !== 'admin') {
       navigate('/login');
       return;
     }
@@ -24,7 +30,6 @@ const AdminReservas: React.FC = () => {
       try {
         setLoading(true);
         const data = await getAllReservas(token);
-        // Ordenamos por fecha para ver las más nuevas primero
         data.sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime());
         setReservas(data);
       } catch (err: any) {
@@ -41,15 +46,13 @@ const AdminReservas: React.FC = () => {
     return <div className="admin-reservas-container"><p>Cargando reservas...</p></div>;
   }
   if (error) {
-    return <div className="admin-reservas-container error">{error}</div>;
+    return <div className="admin-reservas-container error-message">{error}</div>;
   }
 
   return (
     <div className="admin-reservas-container">
-      <div className="admin-header">
-        <h1>Gestión de Reservas</h1>
-        <p>Visualice todas las reservas del sistema y el estado de los recordatorios.</p>
-      </div>
+      <h1>Gestión de Reservas</h1>
+      <p>Visualice todas las reservas del sistema y el estado de los recordatorios.</p>
 
       <div className="table-container">
         <table className="reservas-table">
@@ -67,9 +70,11 @@ const AdminReservas: React.FC = () => {
             {reservas.length > 0 ? (
               reservas.map((reserva) => (
                 <tr key={reserva._id}>
-                  <td>{reserva.id_usuario?.nombre || 'N/A'}</td>
-                  <td>{reserva.id_usuario?.email || 'N/A'}</td>
+                  {/* Usamos los campos correctos: id_usuario.nombreUsuario */}
+                  <td>{reserva.id_usuario?.nombreUsuario || 'N/A'}</td>
+                  <td>{reserva.id_usuario?.correo || 'N/A'}</td>
                   <td>{reserva.id_cancha}</td>
+                  {/* Usamos los campos separados fecha y hora */}
                   <td>{new Date(reserva.fecha).toLocaleDateString('es-CL')}</td>
                   <td>{reserva.hora}</td>
                   <td className={reserva.reminderSent ? 'status-sent' : 'status-pending'}>

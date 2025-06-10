@@ -1,14 +1,10 @@
-// La URL base de tu backend
 const API_URL = 'http://localhost:3000';
 
-// --- Interfaces para definir la forma de los datos ---
-// Estas interfaces nos ayudan a evitar errores en TypeScript
-
-interface IUsuario {
-  _id: string;
-  nombre: string;
+// --- Interfaces: La "plantilla" de cómo se ven los datos ---
+export interface IUsuario {
+  nombreUsuario: string;
   email: string;
-  role: string;
+  rol: string;
 }
 
 export interface IReserva {
@@ -16,45 +12,52 @@ export interface IReserva {
   id_cancha: string;
   fecha: string;
   hora: string;
-  id_usuario: IUsuario; // El usuario viene como un objeto dentro de la reserva
-  reminderSent: boolean; // El nuevo campo que nos interesa
+  usuario?: IUsuario; // Usuario es opcional porque "mis reservas" no lo incluye
+  reminderSent: boolean;
 }
-
 
 // --- Funciones del Servicio ---
 
-// Tu función original (la dejamos como está)
-export async function obtenerReservasUsuario(usuarioId: string) {
-  const response = await fetch(`${API_URL}/reserva/mias?usuarioId=${usuarioId}`);
+export const crearReserva = async (token: string, datos: { id_cancha: string, fecha: string, hora_inicio: string }) => {
+  const response = await fetch(`${API_URL}/reservas`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
+    },
+    body: JSON.stringify(datos),
+  });
   if (!response.ok) {
-    throw new Error('Error al obtener las reservas');
+    const err = await response.json();
+    throw new Error(err.message || 'Error al crear la reserva');
   }
-  const data = await response.json();
-  console.log('Datos recibidos:', data);
-  return data;
-}
+  return await response.json();
+};
 
-// 👇 AÑADE ESTA NUEVA FUNCIÓN (es la que usará el admin) 👇
+export const getMisReservas = async (token: string): Promise<IReserva[]> => {
+  const response = await fetch(`${API_URL}/reservas/mis-reservas`, {
+    headers: { 'Authorization': `Bearer ${token}` },
+  });
+  if (!response.ok) throw new Error('Error al obtener tus reservas');
+  return await response.json();
+};
+
 export const getAllReservas = async (token: string): Promise<IReserva[]> => {
-  try {
-    // El endpoint correcto para obtener TODAS las reservas es /reserva
-    const response = await fetch(`${API_URL}/reserva`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-      },
-    });
+  const response = await fetch(`${API_URL}/reservas/todas`, {
+    headers: { 'Authorization': `Bearer ${token}` },
+  });
+  if (!response.ok) throw new Error('No se pudieron cargar las reservas');
+  return await response.json();
+};
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || 'Error al obtener todas las reservas');
-    }
-    // Le decimos a TypeScript que la respuesta tendrá la forma de un array de IReserva
-    const data: IReserva[] = await response.json();
-    return data;
-  } catch (error) {
-    console.error('Error en getAllReservas:', error);
-    throw error;
+export const eliminarReserva = async (token: string, idReserva: string) => {
+  const response = await fetch(`${API_URL}/reservas/${idReserva}`, {
+    method: 'DELETE',
+    headers: { 'Authorization': `Bearer ${token}` },
+  });
+  if (!response.ok) {
+    const err = await response.json();
+    throw new Error(err.message || 'Error al eliminar la reserva');
   }
+  return await response.json();
 };
