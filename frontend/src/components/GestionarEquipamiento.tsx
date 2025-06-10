@@ -1,3 +1,4 @@
+// src/components/GestionarEquipamiento.tsx
 "use client"
 import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
