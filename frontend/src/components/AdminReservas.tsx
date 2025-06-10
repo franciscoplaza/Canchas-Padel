@@ -303,7 +303,7 @@ const AdminReservas = () => {
 
         <div className="admin-actions">
           <button className="secondary-btn" onClick={() => navigate("/admin")}>
-            Volver al Panel
+            Volver
           </button>
           <button className="primary-btn" onClick={() => window.print()}>
             Imprimir Reservas

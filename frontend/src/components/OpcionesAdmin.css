@@ -202,11 +202,11 @@ body {
 /* Admin Actions */
 .admin-actions {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   margin-top: 30px;
 }
 
-.secondary-btn {
+/* .secondary-btn {
   background-color: transparent;
   color: #1a73e8;
   border: 1px solid #dadce0;
@@ -221,7 +221,7 @@ body {
 .secondary-btn:hover {
   background-color: #f1f3f4;
   border-color: #d2e3fc;
-}
+} */
 
 .logout-btn {
   background-color: #f1f3f4;
@@ -254,11 +254,11 @@ body {
   }
 
   .admin-actions {
-    flex-direction: column;
+    flex-direction: row;
     gap: 15px;
   }
 
-  .secondary-btn,
+  /* .secondary-btn, */
   .logout-btn {
     width: 100%;
   }

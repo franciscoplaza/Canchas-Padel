@@ -154,25 +154,8 @@
 /* User Actions */
 .user-actions {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   margin-top: 30px;
-}
-
-.secondary-btn {
-  background-color: transparent;
-  color: #1a73e8;
-  border: 1px solid #dadce0;
-  padding: 12px 24px;
-  border-radius: 6px;
-  font-size: 16px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.secondary-btn:hover {
-  background-color: #f1f3f4;
-  border-color: #d2e3fc;
 }
 
 .logout-btn {
@@ -202,11 +185,10 @@
   }
 
   .user-actions {
-    flex-direction: column;
+    flex-direction: row;
     gap: 15px;
   }
 
-  .secondary-btn,
   .logout-btn {
     width: 100%;
   }

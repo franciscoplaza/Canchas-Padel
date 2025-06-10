@@ -501,7 +501,7 @@ const GestionarEquipamiento = () => {
 
         <div className="admin-actions">
           <button className="secondary-btn" onClick={() => navigate("/admin")}>
-            Volver al Panel
+            Volver
           </button>
         </div>
       </div>

@@ -124,9 +124,9 @@ const OpcionesAdmin = () => {
         </div>
 
         <div className="admin-actions">
-          <button className="secondary-btn" onClick={() => navigate("/")}>
+          {/* <button className="secondary-btn" onClick={() => navigate("/")}>
             Volver al Inicio
-          </button>
+          </button> */}
           <button
             className="logout-btn"
             onClick={() => {

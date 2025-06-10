@@ -118,12 +118,12 @@ const OpcionesUsuario = () => {
         </div>
 
         <div className="user-actions">
-          <button 
+          {/* <button 
             className="secondary-btn" 
             onClick={() => navigate("/")}
           >
             Volver al Inicio
-          </button>
+          </button> */}
           <button
             className="logout-btn"
             onClick={() => {

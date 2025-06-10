@@ -159,6 +159,12 @@ const CrearReserva = () => {
 
         <button type="submit">Reservar</button>
       </form>
+      <button 
+        className="volver-btn"
+        onClick={() => navigate('/usuario')}
+      >
+        Volver
+      </button>
     </div>
   );
 };

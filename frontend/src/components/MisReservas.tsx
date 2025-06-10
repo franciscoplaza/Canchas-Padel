@@ -308,8 +308,8 @@ const MisReservas = () => {
         )}
 
         <div className="user-actions">
-          <button className="secondary-btn" onClick={() => navigate("/")}>
-            Volver al Inicio
+          <button className="secondary-btn" onClick={() => navigate("/usuario")}>
+            Volver
           </button>
           <button className="primary-btn" onClick={() => navigate("/reservar-cancha")}>
             Nueva Reserva
