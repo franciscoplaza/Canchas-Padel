@@ -10,8 +10,14 @@ export class ReservaController {
   @Post()
   @UseGuards(JwtAuthGuard)
   async crearReserva(@Request() req, @Body() body: any) {
-    const { id_cancha, fecha, hora_inicio } = body;
-    return this.reservaService.crearReserva(req.user.userId, id_cancha, fecha, hora_inicio);
+    const { id_cancha, fecha, hora_inicio, equipamiento } = body;
+    return this.reservaService.crearReserva(
+      req.user.userId, 
+      id_cancha, 
+      fecha, 
+      hora_inicio,
+      equipamiento || {}
+    );
   }
 
   @Get('mis-reservas')

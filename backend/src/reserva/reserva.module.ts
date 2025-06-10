@@ -8,11 +8,14 @@ import { CanchaModule } from '../cancha/cancha.module';
 import { Reserva, ReservaSchema } from './reserva.schema';
 import { Cancha, CanchaSchema } from '../cancha/cancha.schema';
 import { Usuario, UsuarioSchema } from '../usuario/usuario.schema';
+import { Equipamiento, EquipamientoSchema } from '../equipamiento/equipamiento.schema';
+
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Reserva.name, schema: ReservaSchema }]),
     MongooseModule.forFeature([{ name: Cancha.name, schema: CanchaSchema }]),
     MongooseModule.forFeature([{ name: Usuario.name, schema: UsuarioSchema }]),
+    MongooseModule.forFeature([{ name: Equipamiento.name, schema: EquipamientoSchema }]),
     UsuarioModule,
     CanchaModule, 
   ],

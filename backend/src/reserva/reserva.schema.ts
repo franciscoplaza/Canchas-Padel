@@ -18,7 +18,25 @@ export class Reserva {
   @Prop({ required: true })
   precio: number;
 
-  @Prop({ enum: ['pendiente', 'confirmada', 'cancelada'], default: 'pendiente' })
+  @Prop({
+    type: [{
+      id_equipamiento: String,
+      nombre: String,
+      cantidad: Number,
+      costo_unitario: Number,
+      subtotal: Number
+    }],
+    default: []
+  })
+  equipamiento: {
+    id_equipamiento: string;
+    nombre: string;
+    cantidad: number;
+    costo_unitario: number;
+    subtotal: number;
+  }[];
+
+  @Prop({ enum: ['pendiente', 'confirmada', 'cancelada'], default: 'confirmada' })
   estado: string;
 }
 
