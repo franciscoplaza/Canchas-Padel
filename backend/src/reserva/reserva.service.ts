@@ -31,6 +31,11 @@ export class ReservaService {
       throw new NotFoundException('Usuario no encontrado');
     }
 
+    // Validar saldo suficiente
+    if (usuario.saldo < cancha.precio) {
+      throw new BadRequestException('Saldo insuficiente para realizar la reserva');
+    }
+
     // Validar horario
     if (!this.HORARIOS_DISPONIBLES.includes(hora_inicio)) {
       throw new BadRequestException('Horario no válido. Los horarios disponibles son: ' + 
@@ -52,14 +57,47 @@ export class ReservaService {
       throw new BadRequestException('La cancha ya está reservada en este horario');
     }
 
-    // Crear reserva
-    const reserva = new this.reservaModel({
-      fecha_hora: fechaHora,
-      id_usuario: rutUsuario,
-      id_cancha: idCancha
-    });
+    // Iniciar transacción
+    const session = await this.reservaModel.db.startSession();
+    session.startTransaction();
 
-    return reserva.save();
+    try {
+      // Descontar saldo
+      await this.usuarioModel.findOneAndUpdate(
+        { rut: rutUsuario },
+        {
+          $inc: { saldo: -cancha.precio },
+          $push: {
+            transacciones: {
+              monto: cancha.precio,
+              tipo: 'pago',
+              fecha: new Date(),
+              descripcion: `Pago por reserva en ${idCancha}`
+            }
+          }
+        },
+        { session }
+      );
+
+      // Crear reserva
+      const reserva = new this.reservaModel({
+        fecha_hora: fechaHora,
+        id_usuario: rutUsuario,
+        id_cancha: idCancha,
+        precio: cancha.precio,
+        estado: 'confirmada'
+      });
+
+      await reserva.save({ session });
+
+      await session.commitTransaction();
+      return reserva;
+    } catch (error) {
+      await session.abortTransaction();
+      throw error;
+    } finally {
+      session.endSession();
+    }
   }
 
   async obtenerReservasPorUsuario(idUsuario: string) {
@@ -89,4 +127,5 @@ export class ReservaService {
       }
     ]).exec();
   }
+
 }

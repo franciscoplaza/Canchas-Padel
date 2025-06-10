@@ -14,6 +14,7 @@ const CrearReserva = () => {
   const [hora, setHora] = useState<string>('');
   const [canchaId, setCanchaId] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(true);
+  const [saldo, setSaldo] = useState<number>(0);
   const navigate = useNavigate();
 
   const HORARIOS_DISPONIBLES = [
@@ -28,26 +29,34 @@ const CrearReserva = () => {
       return;
     }
 
-    const fetchCanchas = async () => {
+    const fetchCanchasYSaldo = async () => {
       try {
-        const response = await fetch('http://localhost:3000/cancha', {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        
-        if (!response.ok) {
-          throw new Error('Error al obtener canchas');
-        }
-        const data: Cancha[] = await response.json();
-        setCanchas(data);
+        const [canchasRes, saldoRes] = await Promise.all([
+          fetch('http://localhost:3000/cancha', {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+          fetch('http://localhost:3000/saldo', {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+        ]);
+
+        if (!canchasRes.ok) throw new Error('Error al obtener canchas');
+        if (!saldoRes.ok) throw new Error('Error al obtener saldo');
+
+        const canchasData = await canchasRes.json();
+        const saldoData = await saldoRes.json();
+
+        setCanchas(canchasData);
+        setSaldo(saldoData.saldo);
       } catch (err) {
-        const error = err instanceof Error ? err.message : 'Error desconocido al cargar canchas';
+        const error = err instanceof Error ? err.message : 'Error desconocido al cargar datos';
         alert(error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchCanchas();
+    fetchCanchasYSaldo();
   }, [navigate]);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -55,6 +64,18 @@ const CrearReserva = () => {
     
     if (!canchaId || !fecha || !hora) {
       alert('Por favor complete todos los campos');
+      return;
+    }
+
+    const canchaSeleccionada = canchas.find(c => c.id_cancha === canchaId);
+    if (!canchaSeleccionada) {
+      alert('Cancha no encontrada');
+      return;
+    }
+
+    if (saldo < canchaSeleccionada.precio) {
+      alert('Saldo insuficiente. Por favor cargue saldo antes de reservar.');
+      navigate('/saldo');
       return;
     }
 
@@ -85,11 +106,14 @@ const CrearReserva = () => {
     }
   };
 
-  if (loading) return <div>Cargando canchas...</div>;
+  if (loading) return <div>Cargando canchas y saldo...</div>;
 
   return (
     <div className="crear-reserva-container">
       <h1>Nueva Reserva</h1>
+      <div className="saldo-info">
+        <p>Saldo disponible: <span className="saldo-monto">${saldo.toLocaleString()}</span></p>
+      </div>
       
       <form onSubmit={handleSubmit}>
         <div className="form-group">

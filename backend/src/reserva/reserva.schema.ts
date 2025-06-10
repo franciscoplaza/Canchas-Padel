@@ -1,8 +1,6 @@
 // backend/src/reserva/reserva.schema.ts
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { Usuario } from '../usuario/usuario.schema';
-import { Cancha } from '../cancha/cancha.schema';
 
 export type ReservaDocument = Reserva & Document;
 
@@ -11,11 +9,17 @@ export class Reserva {
   @Prop({ type: Date, required: true })
   fecha_hora: Date;
 
-  @Prop({ type: String, ref: 'Usuario', required: true }) // Referencia por RUT
-  id_usuario: string; // Cambiado de Usuario a string
+  @Prop({ type: String, ref: 'Usuario', required: true })
+  id_usuario: string;
 
-  @Prop({ type: String, required: true }) // Guardamos directamente el ID de cancha
-  id_cancha: string; // Cambiado de Cancha a string
+  @Prop({ type: String, required: true })
+  id_cancha: string;
+
+  @Prop({ required: true })
+  precio: number;
+
+  @Prop({ enum: ['pendiente', 'confirmada', 'cancelada'], default: 'pendiente' })
+  estado: string;
 }
 
 export const ReservaSchema = SchemaFactory.createForClass(Reserva);

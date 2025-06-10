@@ -1,3 +1,4 @@
+//src/components/OpcionesUsuario.tsx
 import { useNavigate } from "react-router-dom";
 import "./OpcionesUsuario.css";
 
@@ -80,6 +81,40 @@ const OpcionesUsuario = () => {
               </button>
             </div>
           </div>
+
+          <div className="user-card">
+            <div className="card-icon saldo-icon">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="32"
+                height="32"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <rect x="2" y="6" width="20" height="12" rx="2" ry="2"></rect>
+                <line x1="12" y1="12" x2="12" y2="12"></line>
+                <path d="M8 12h.01"></path>
+                <path d="M16 12h.01"></path>
+              </svg>
+            </div>
+            <div className="card-content">
+              <h2 className="card-title">Saldo</h2>
+              <p className="card-description">
+                Cargar Saldo
+              </p>
+              <button 
+                onClick={() => navigate("/saldo")} 
+                className="user-btn reservas-btn"
+              >
+                Ver mi Saldo
+              </button>
+            </div>
+          </div>
+
         </div>
 
         <div className="user-actions">

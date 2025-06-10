@@ -12,6 +12,7 @@ import { ReservaModule } from './reserva/reserva.module';
 import { UsuarioModule } from './usuario/usuario.module';
 import { CanchaModule } from './cancha/cancha.module';
 import { EquipamientoModule } from './equipamiento/equipamiento.module'; 
+import { SaldoModule } from './saldo/saldo.module';
 
 @Module({
   imports: [
@@ -29,7 +30,7 @@ import { EquipamientoModule } from './equipamiento/equipamiento.module';
       { name: Cancha.name, schema: CanchaSchema },
       { name: Reserva.name, schema: ReservaSchema },
     ]),
-    
+    SaldoModule,
   ],
   controllers: [AppController],
   providers: [AppService],
