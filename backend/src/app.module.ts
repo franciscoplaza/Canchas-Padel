@@ -13,6 +13,9 @@ import { UsuarioModule } from './usuario/usuario.module';
 import { CanchaModule } from './cancha/cancha.module';
 import { EquipamientoModule } from './equipamiento/equipamiento.module'; 
 import { SaldoModule } from './saldo/saldo.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { EmailService } from './email/email.service';
+import { ReminderService } from './reminder/reminder.service';
 
 @Module({
   imports: [
@@ -31,9 +34,10 @@ import { SaldoModule } from './saldo/saldo.module';
       { name: Reserva.name, schema: ReservaSchema },
     ]),
     SaldoModule,
+    ScheduleModule.forRoot(),
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, EmailService, ReminderService],
 })
 export class AppModule {}
 

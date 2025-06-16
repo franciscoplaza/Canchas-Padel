@@ -38,6 +38,9 @@ export class Reserva {
 
   @Prop({ enum: ['pendiente', 'confirmada', 'cancelada'], default: 'confirmada' })
   estado: string;
+
+  @Prop({ default: false })
+  recordatorioEnviado: boolean;
 }
 
 export const ReservaSchema = SchemaFactory.createForClass(Reserva);
