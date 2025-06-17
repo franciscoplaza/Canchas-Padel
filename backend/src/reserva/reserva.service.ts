@@ -152,6 +152,24 @@ export class ReservaService {
 
       const reservaCreada = await reserva.save({ session });
 
+      // Registrar en el historial
+      await this.historialService.registrar(
+        usuario._id.toString(),
+        TipoAccion.CREAR_RESERVA,
+        'Reserva',
+        reservaCreada._id.toString(),
+        {
+          descripcion: `Reserva creada para ${fechaHora.toLocaleString()} en cancha ${idCancha}`,
+          montoTotal: totalReserva,
+          equipamiento: equipamientoDetalle.map(item => ({
+            nombre: item.nombre,
+            cantidad: item.cantidad
+          })),
+          cantidadAcompanantes: acompanantes.length
+        },
+        session
+      );
+
       // Crear acompañantes
       for (const acompanante of acompanantes) {
         await this.acompananteService.crearAcompanante({
