@@ -15,30 +15,37 @@
 
 .historial-table {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0;
   background-color: #fff;
+  border-radius: 12px;
+  overflow: hidden;
 }
 
-.historial-table th, .historial-table td {
+.historial-table th,
+.historial-table td {
   border: 1px solid #ddd;
   padding: 12px;
   text-align: left;
 }
 
 .historial-table th {
-  background-color: #007bff;
+  background-color: #004c9c;
   color: white;
   font-weight: bold;
 }
 
+/* Filas pares de la tabla */
 .historial-table tr:nth-child(even) {
   background-color: #f9f9f9;
 }
 
+/* Hover en filas */
 .historial-table tr:hover {
   background-color: #f1f1f1;
 }
 
+/* Contenido en celdas tipo preformateado */
 .historial-table td pre {
   background-color: #e9ecef;
   padding: 8px;
@@ -48,10 +55,61 @@
   font-size: 0.85em;
 }
 
+/* Mensajes de error */
 .error {
-    color: #d8000c;
-    background-color: #ffdddd;
-    border: 1px solid #d8000c;
-    padding: 1rem;
-    border-radius: 8px;
+  color: #d8000c;
+  background-color: #ffdddd;
+  border: 1px solid #d8000c;
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+/* Bordes redondeados en cabecera */
+.historial-table th:first-child {
+  border-top-left-radius: 12px;
+}
+
+.historial-table th:last-child {
+  border-top-right-radius: 12px;
+}
+
+/* Bordes redondeados en última fila */
+.historial-table tr:last-child td:first-child {
+  border-bottom-left-radius: 12px;
+}
+
+.historial-table tr:last-child td:last-child {
+  border-bottom-right-radius: 12px;
+}
+
+.volver-btn {
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.volver-btn:hover {
+  background-color: #5a6268;
+}
+
+.filtros-barra {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+  justify-content: center;
+}
+
+.filtros-barra input {
+
+  height: 20px;
+  width: 500px;
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  min-width: 200px;
 }
