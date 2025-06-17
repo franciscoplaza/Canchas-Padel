@@ -91,6 +91,34 @@ const AdminReservas = () => {
     }
   }
 
+  const handleCancelarReserva = async (idReserva: string) => {
+    const token = localStorage.getItem("token");
+    
+    try {
+      const confirmacion = window.confirm("¿Estás seguro de que deseas cancelar esta reserva?");
+      if (!confirmacion) return;
+
+      const response = await fetch(`http://localhost:3000/reservas/${idReserva}/cancelar`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Error al cancelar la reserva");
+      }
+
+      // Actualizar la lista de reservas después de cancelar
+      setReservas(reservas.filter(reserva => reserva._id !== idReserva));
+      alert("Reserva cancelada exitosamente");
+    } catch (error) {
+      console.error("Error al cancelar reserva:", error);
+      alert(error instanceof Error ? error.message : "Error desconocido al cancelar reserva");
+    }
+  };
+
   const getNombreCancha = (idCancha: string): string => {
     try {
       // Buscar la cancha por su ID
@@ -270,7 +298,8 @@ const AdminReservas = () => {
                             <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
                           </svg>
                         </button>
-                        <button className="action-btn delete-btn" title="Cancelar reserva">
+                        <button className="action-btn delete-btn" title="Cancelar reserva" onClick={() => handleCancelarReserva(reserva._id)}
+                          >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             width="18"

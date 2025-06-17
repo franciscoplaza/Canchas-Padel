@@ -198,16 +198,19 @@ export class ReservaService {
           throw new ForbiddenException('No tienes permiso para cancelar esta reserva.');
       }
       
-      // Lógica de negocio: Cancelación con 7 días de antelación
-      const ahora = new Date();
-      const fechaReserva = new Date(reserva.fecha_hora);
-      const diferenciaTiempo = fechaReserva.getTime() - ahora.getTime();
-      const sieteDiasEnMs = 7 * 24 * 60 * 60 * 1000;
+      // Solo aplicar la restricción de 7 días si NO es admin
+      if (usuarioQueCancela.rol !== 'admin') {
+        const ahora = new Date();
+        const fechaReserva = new Date(reserva.fecha_hora);
+        const diferenciaTiempo = fechaReserva.getTime() - ahora.getTime();
+        const sieteDiasEnMs = 7 * 24 * 60 * 60 * 1000;
 
-      if (diferenciaTiempo < sieteDiasEnMs) {
-        throw new BadRequestException('No se puede cancelar la reserva con menos de 7 días de antelación.');
+        if (diferenciaTiempo < sieteDiasEnMs) {
+          throw new BadRequestException('No se puede cancelar la reserva con menos de 7 días de antelación.');
+        }
       }
 
+      // Resto del código permanece igual...
       // Calcular monto total a devolver
       const montoEquipamiento = reserva.equipamiento.reduce((acc, item) => acc + item.subtotal, 0);
       const montoTotalDevuelto = reserva.precio + montoEquipamiento;
@@ -246,12 +249,12 @@ export class ReservaService {
       
       // Registrar en el historial
        await this.historialService.registrar(
-        usuarioQueCancela.id, // Ahora pasamos el ID correcto que espera el historial
+        usuarioQueCancela.id,
         TipoAccion.CANCELAR_RESERVA,
         'Reserva',
         idReserva,
         {
-          descripcion: `Reserva para ${reserva.fecha_hora.toLocaleString()} fue cancelada por ${usuarioQueCancela.rut}.`,
+          descripcion: `Reserva para ${reserva.fecha_hora.toLocaleString()} fue cancelada por ${usuarioQueCancela.rut} (${usuarioQueCancela.rol}).`,
           montoDevuelto: montoTotalDevuelto,
           usuarioReserva: reserva.id_usuario
         },
@@ -263,7 +266,7 @@ export class ReservaService {
 
     } catch (error) {
       await session.abortTransaction();
-      throw error; // Relanza el error para que Nest lo maneje
+      throw error;
     } finally {
       session.endSession();
     }
