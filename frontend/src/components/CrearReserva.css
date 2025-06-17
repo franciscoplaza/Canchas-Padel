@@ -248,3 +248,29 @@ button[type="submit"]:hover {
 .delete-acompanante-btn:hover {
   background-color: #c0392b;
 }
+
+.acompanantes-modal {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 700px;
+  max-width: 2000px;
+  max-height: 90vh; /* Limita el alto al 90% de la ventana */
+  overflow-y: auto;  /* Habilita scroll interno si es necesario */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px; /* Agrega padding para espacio en móviles */
+  z-index: 1000;
+}
