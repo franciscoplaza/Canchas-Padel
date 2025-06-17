@@ -1,45 +1,68 @@
+// backend/src/historial/historial.service.ts
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { ClientSession, Model, Schema as MongooseSchema } from 'mongoose';
+import { ClientSession, Model, Types } from 'mongoose';
 import { Historial, TipoAccion } from './historial.schema';
+import { Usuario } from '../usuario/usuario.schema';
 
 @Injectable()
 export class HistorialService {
   constructor(
     @InjectModel(Historial.name) private historialModel: Model<Historial>,
+    @InjectModel(Usuario.name) private usuarioModel: Model<Usuario>, // Inyecta modelo Usuario
   ) {}
 
   /**
-   * Registra una nueva acción en el historial.
+   * Registra una acción en el historial manejando RUTs u ObjectIds
    */
-   async registrar(
-    usuarioId: string | MongooseSchema.Types.ObjectId,
+  async registrar(
+    usuarioId: string | Types.ObjectId,
     tipoAccion: TipoAccion,
     entidadAfectada: string,
-    entidadId: string | MongooseSchema.Types.ObjectId,
+    entidadId: string | Types.ObjectId,
     detalles: Record<string, any>,
-    session?: ClientSession, // Se añade '?' para hacerlo opcional.
+    session?: ClientSession,
   ): Promise<Historial> {
+    // 1. Convertir a ObjectId válido
+    let usuarioObjectId: Types.ObjectId;
+
+    if (usuarioId instanceof Types.ObjectId) {
+      usuarioObjectId = usuarioId;
+    } else if (Types.ObjectId.isValid(usuarioId)) {
+      usuarioObjectId = new Types.ObjectId(usuarioId);
+    } else {
+      // Buscar por RUT si no es ObjectId
+      const usuario = await this.usuarioModel.findOne(
+        { rut: usuarioId },
+        { _id: 1 },
+        { session }
+      ).exec();
+
+      if (!usuario) {
+        throw new Error(`Usuario con RUT ${usuarioId} no encontrado`);
+      }
+      usuarioObjectId = usuario._id;
+    }
+
+    // 2. Crear registro de historial
     const registro = new this.historialModel({
-      usuario: usuarioId,
+      usuario: usuarioObjectId,
       tipoAccion,
       entidadAfectada,
       entidadId,
       detalles,
     });
 
-    // Se guarda usando la sesión solo si esta existe.
-    // Mongoose maneja el caso en que 'session' es undefined.
     return registro.save({ session });
   }
 
   /**
-   * Busca todos los registros del historial, populando los datos del usuario.
+   * Obtiene todo el historial con datos básicos del usuario
    */
   async findAll(): Promise<Historial[]> {
     return this.historialModel
       .find()
-      .populate('usuario', 'nombre correo') // Solo trae nombre y correo del usuario
+      .populate('usuario', 'nombreUsuario rut correo rol') // Campos que quieres mostrar
       .sort({ createdAt: -1 })
       .exec();
   }

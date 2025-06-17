@@ -46,70 +46,72 @@ const MisReservas = () => {
 
     const fetchData = async () => {
       try {
-        // 1. Obtenemos las canchas para mostrar nombres correctos
-        console.log("Obteniendo canchas...")
+        setLoading(true);
+        
+        // 1. Primero obtenemos las canchas
+        console.log("Obteniendo canchas...");
         const canchasResponse = await fetch("http://localhost:3000/cancha", {
           headers: { Authorization: `Bearer ${token}` },
-        })
+        });
 
         if (!canchasResponse.ok) {
-          console.warn("No se pudieron obtener las canchas. Se mostrarán IDs en su lugar.")
-        } else {
-          const canchasData = await canchasResponse.json()
-          setCanchas(canchasData)
-          console.log("Canchas obtenidas:", canchasData.length)
+          throw new Error("Error al obtener canchas");
         }
+        const canchasData = await canchasResponse.json();
+        setCanchas(canchasData);
+        console.log("Canchas obtenidas:", canchasData.length);
 
-        // 2. Obtenemos las reservas del usuario
-        console.log("Obteniendo mis reservas...")
+        // 2. Luego obtenemos las reservas (solo después de tener canchas)
+        console.log("Obteniendo mis reservas...");
         const reservasResponse = await fetch("http://localhost:3000/reservas/mis-reservas", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
+          headers: { Authorization: `Bearer ${token}` },
+        });
 
-        if (!reservasResponse.ok) throw new Error("Error al obtener reservas")
-        const reservasData = await reservasResponse.json()
+        if (!reservasResponse.ok) throw new Error("Error al obtener reservas");
+        const reservasData = await reservasResponse.json();
         
-        // Mapear las reservas para incluir capacidad_cancha
+        // Ahora sí podemos mapear correctamente con las canchas ya cargadas
         const reservasConCapacidad = reservasData.map((reserva: any) => {
-          const cancha = canchas.find(c => c._id === reserva.id_cancha || c.id_cancha === reserva.id_cancha)
+          const cancha = canchasData.find((c: any) => 
+            c._id === reserva.id_cancha || c.id_cancha === reserva.id_cancha
+          );
           return {
             ...reserva,
-            capacidad_cancha: cancha?.capacidad_maxima || 0
-          }
-        })
+            capacidad_cancha: cancha?.capacidad_maxima || reserva.capacidad_cancha // Usa el valor de la reserva como fallback
+          };
+        });
         
-        setReservas(reservasConCapacidad)
-        console.log("Reservas obtenidas:", reservasData.length)
+        setReservas(reservasConCapacidad);
+        console.log("Reservas obtenidas:", reservasData.length);
 
-        // 3. Obtener acompañantes para cada reserva
+        // 3. Obtener acompañantes (igual que antes)
         const acompanantesPromises = reservasData.map(async (reserva: any) => {
           const response = await fetch(`http://localhost:3000/acompanantes/reserva/${reserva._id}`, {
             headers: { Authorization: `Bearer ${token}` },
-          })
-          if (!response.ok) return []
-          return response.json()
-        })
+          });
+          if (!response.ok) return [];
+          return response.json();
+        });
 
-        const acompanantesData = await Promise.all(acompanantesPromises)
+        const acompanantesData = await Promise.all(acompanantesPromises);
         
         const acompanantesMap = reservasData.reduce((acc: any, reserva: any, index: number) => {
-          acc[reserva._id] = acompanantesData[index] || []
-          return acc
-        }, {})
+          acc[reserva._id] = acompanantesData[index] || [];
+          return acc;
+        }, {});
 
-        setAcompanantesPorReserva(acompanantesMap)
+        setAcompanantesPorReserva(acompanantesMap);
       } catch (err) {
-        console.error("Error al cargar datos:", err)
-        setError(err instanceof Error ? err.message : "Error desconocido")
+        console.error("Error al cargar datos:", err);
+        setError(err instanceof Error ? err.message : "Error desconocido");
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    fetchData()
-  }, [navigate])
+    fetchData();
+  }, [navigate]);
+  
    // ---  Función para manejar la cancelación ---
    const handleCancelar = async (reservaId: string) => {
     // Usamos window.confirm para pedir una confirmación simple al usuario.

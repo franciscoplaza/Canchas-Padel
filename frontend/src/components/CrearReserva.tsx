@@ -158,6 +158,8 @@ const CrearReserva = () => {
 
     if (!confirmar) return;
 
+    const fechaISO = new Date(`${fecha}T${hora}:00`).toISOString();
+
     try {
       const response = await fetch('http://localhost:3000/reservas', {
         method: 'POST',
@@ -167,7 +169,7 @@ const CrearReserva = () => {
         },
         body: JSON.stringify({
           id_cancha: canchaId,
-          fecha,
+          fecha: fechaISO,
           hora_inicio: hora,
           equipamiento: equipamientoSeleccionado,
           acompanantes

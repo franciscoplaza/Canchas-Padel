@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, Schema as MongooseSchema } from 'mongoose';
+import { Document, Schema as MongooseSchema, Types } from 'mongoose';
 
 // CORRECCIÓN 1: Se completa el enum con todas las acciones necesarias.
 // Esto permite que los servicios de Cancha y Equipamiento puedan registrar sus acciones.
@@ -19,7 +19,7 @@ export enum TipoAccion {
 @Schema({ timestamps: true })
 export class Historial extends Document {
   @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Usuario', required: true })
-  usuario: MongooseSchema.Types.ObjectId;
+  usuario: Types.ObjectId;
 
   @Prop({ type: String, enum: Object.values(TipoAccion), required: true })
   tipoAccion: string;
