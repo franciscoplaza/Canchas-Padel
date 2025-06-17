@@ -1,5 +1,5 @@
 // backend/src/reserva/reserva.controller.ts
-import { Controller, Get, UseGuards, Request, Post, Body,Delete, Param } from '@nestjs/common';
+import { Controller, Get, UseGuards, Request, Post, Body,Delete, Param, Put, Req } from '@nestjs/common';
 import { ReservaService } from './reserva.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
@@ -49,5 +49,19 @@ export class ReservaController {
     const idUsuario = req.user.userId;
     // Llamamos al nuevo método en el servicio, pasándole ambos IDs
     return this.reservaService.cancelarReserva(idReserva, idUsuario);
+  }
+
+  @Put(':id/modificar')
+  @UseGuards(JwtAuthGuard)
+  async modificarReserva(
+    @Param('id') idReserva: string,
+    @Req() req,
+    @Body() cambios: {
+      acompanantes?: any[],
+      equipamiento?: {[key: string]: number}
+    }
+  ) {
+    const idUsuario = req.user.userId;
+    return this.reservaService.modificarReserva(idReserva, idUsuario, cambios);
   }
 }

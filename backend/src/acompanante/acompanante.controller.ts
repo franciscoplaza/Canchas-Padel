@@ -1,5 +1,5 @@
 // === Canchas-Padel-main/backend/src/acompanante/acompanante.controller.ts ===
-import { Controller, Post, Body, UseGuards, Get, Param } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, Get, Param, Delete } from '@nestjs/common';
 import { AcompananteService } from './acompanante.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Acompanante } from './acompanante.schema';
@@ -18,5 +18,11 @@ export class AcompananteController {
   @UseGuards(JwtAuthGuard)
   async obtenerPorReserva(@Param('idReserva') idReserva: string) {
     return this.acompananteService.obtenerPorReserva(idReserva);
+  }
+
+  @Delete('reserva/:idReserva')
+  @UseGuards(JwtAuthGuard)
+  async eliminarPorReserva(@Param('idReserva') idReserva: string) {
+    return this.acompananteService.eliminarPorReserva(idReserva);
   }
 }

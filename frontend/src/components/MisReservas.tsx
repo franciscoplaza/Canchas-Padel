@@ -12,12 +12,26 @@ interface Cancha {
   capacidad_maxima: number
 }
 
-interface Reserva {
+interface Equipamiento {
   _id: string
-  fecha_hora: string
-  id_cancha: string
-  cantidad_acompanantes: number
-  capacidad_cancha: number
+  nombre: string
+  cantidad_disponible: number
+  costo_unitario: number
+}
+
+interface Reserva {
+  _id: string;
+  fecha_hora: string;
+  id_cancha: string;
+  cantidad_acompanantes: number;
+  capacidad_cancha: number;
+  equipamiento: {
+    id_equipamiento: string;
+    nombre: string;
+    cantidad: number;
+    costo_unitario: number;
+    subtotal: number;
+  }[];
 }
 
 interface Acompanante {
@@ -30,12 +44,18 @@ interface Acompanante {
 const MisReservas = () => {
   const [reservas, setReservas] = useState<Reserva[]>([])
   const [canchas, setCanchas] = useState<Cancha[]>([])
+  const [equipamientos, setEquipamientos] = useState<Equipamiento[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
   const [cancelMessage, setCancelMessage] = useState({ type: "", text: "" })
   const navigate = useNavigate()
   const [acompanantesPorReserva, setAcompanantesPorReserva] = useState<{[key: string]: Acompanante[]}>({})
   const [expandedReservas, setExpandedReservas] = useState<string[]>([])
+  const [editingReserva, setEditingReserva] = useState<Reserva | null>(null);
+  const [editAcompanantes, setEditAcompanantes] = useState<Acompanante[]>([]);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editEquipamiento, setEditEquipamiento] = useState<{[key: string]: number}>({});
+  const [showEquipamientoModal, setShowEquipamientoModal] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("token")
@@ -61,7 +81,18 @@ const MisReservas = () => {
         setCanchas(canchasData);
         console.log("Canchas obtenidas:", canchasData.length);
 
-        // 2. Luego obtenemos las reservas (solo después de tener canchas)
+        // 2. Obtener equipamientos
+        const equipamientosResponse = await fetch("http://localhost:3000/equipamiento", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        
+        if (!equipamientosResponse.ok) {
+          throw new Error("Error al obtener equipamientos");
+        }
+        const equipamientosData = await equipamientosResponse.json();
+        setEquipamientos(equipamientosData);
+
+        // 3. Luego obtenemos las reservas (solo después de tener canchas)
         console.log("Obteniendo mis reservas...");
         const reservasResponse = await fetch("http://localhost:3000/reservas/mis-reservas", {
           headers: { Authorization: `Bearer ${token}` },
@@ -84,7 +115,7 @@ const MisReservas = () => {
         setReservas(reservasConCapacidad);
         console.log("Reservas obtenidas:", reservasData.length);
 
-        // 3. Obtener acompañantes (igual que antes)
+        // 4. Obtener acompañantes (igual que antes)
         const acompanantesPromises = reservasData.map(async (reserva: any) => {
           const response = await fetch(`http://localhost:3000/acompanantes/reserva/${reserva._id}`, {
             headers: { Authorization: `Bearer ${token}` },
@@ -112,25 +143,19 @@ const MisReservas = () => {
     fetchData();
   }, [navigate]);
   
-   // ---  Función para manejar la cancelación ---
-   const handleCancelar = async (reservaId: string) => {
-    // Usamos window.confirm para pedir una confirmación simple al usuario.
+  const handleCancelar = async (reservaId: string) => {
     if (!window.confirm("¿Estás seguro de que deseas cancelar esta reserva?")) {
-      return; // Si el usuario dice "No", no hacemos nada.
+      return;
     }
 
     try {
-      setCancelMessage({ type: "", text: "" }); // Limpiamos mensajes anteriores.
-      const response = await cancelarReserva(reservaId); // Llamamos a la función del servicio.
+      setCancelMessage({ type: "", text: "" });
+      const response = await cancelarReserva(reservaId);
       
-      // Si todo sale bien, mostramos un mensaje de éxito.
       setCancelMessage({ type: "success", text: response.message });
-      
-      // Actualizamos la lista de reservas en la pantalla para quitar la que se canceló.
       setReservas(reservas.filter((r) => r._id !== reservaId));
 
     } catch (err: any) {
-      // Si el backend devuelve un error (ej: "no se puede cancelar con menos de 7 días"), lo mostramos.
       setCancelMessage({ type: "error", text: err.message });
     }
   };
@@ -144,29 +169,85 @@ const MisReservas = () => {
       }).format(date)
     } catch (error) {
       console.error("Error al formatear fecha:", error)
-      return dateString // Devolvemos la fecha original si hay error
+      return dateString
     }
   }
 
   const getNombreCancha = (idCancha: string): string => {
     try {
-      // Buscar la cancha por su ID
       const cancha = canchas.find((c) => c._id === idCancha || c.id_cancha === idCancha)
 
       if (cancha) {
-        // Si encontramos la cancha, formateamos su nombre
         const numero = cancha.id_cancha.replace(/\D/g, "")
         if (!numero) return cancha.id_cancha.charAt(0).toUpperCase() + cancha.id_cancha.slice(1)
         return `Cancha ${numero}`
       }
 
-      // Si no encontramos la cancha, devolvemos el ID como fallback
       return `Cancha ${idCancha}`
     } catch (error) {
       console.error("Error al obtener nombre de cancha:", error)
-      return `Cancha ${idCancha}` // Fallback seguro
+      return `Cancha ${idCancha}`
     }
   }
+
+  const iniciarEdicion = (reserva: Reserva) => {
+    const ahora = new Date();
+    const fechaReserva = new Date(reserva.fecha_hora);
+    const diferencia = fechaReserva.getTime() - ahora.getTime();
+    const sieteDias = 7 * 24 * 60 * 60 * 1000;
+
+    if (diferencia < sieteDias) {
+      alert('No puedes modificar reservas con menos de 7 días de anticipación');
+      return;
+    }
+
+    setEditingReserva(reserva);
+    setEditAcompanantes(acompanantesPorReserva[reserva._id] || []);
+    setEditEquipamiento(
+      reserva.equipamiento.reduce((acc, item) => {
+        acc[item.id_equipamiento] = item.cantidad;
+        return acc;
+      }, {} as {[key: string]: number})
+    );
+    setShowEditModal(true);
+  };
+
+  const handleGuardarCambios = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`http://localhost:3000/reservas/${editingReserva?._id}/modificar`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          acompanantes: editAcompanantes,
+          equipamiento: editEquipamiento
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Error al modificar reserva');
+      }
+
+      // Actualizar el estado local
+      const updatedReserva = await response.json();
+      setReservas(reservas.map(r => r._id === updatedReserva._id ? updatedReserva : r));
+      
+      // Actualizar acompañantes
+      setAcompanantesPorReserva({
+        ...acompanantesPorReserva,
+        [updatedReserva._id]: editAcompanantes
+      });
+
+      setShowEditModal(false);
+      alert('Reserva modificada exitosamente');
+    } catch (error) {
+      alert(error instanceof Error ? error.message : 'Error desconocido');
+    }
+  };
 
   const toggleExpandReserva = (reservaId: string) => {
     setExpandedReservas(prev => 
@@ -226,7 +307,7 @@ const MisReservas = () => {
           <p className="user-subtitle">Gestiona tus reservas de canchas deportivas</p>
         </div>
 
-         {cancelMessage.text && (
+        {cancelMessage.text && (
           <div className={`cancel-message ${cancelMessage.type}`}>
             {cancelMessage.text}
           </div>
@@ -264,9 +345,7 @@ const MisReservas = () => {
               </div>
               <div className="stat-card">
                 <div className="stat-value">
-                  {
-                    reservas.filter((r) => new Date(r.fecha_hora) > new Date()).length
-                  }
+                  {reservas.filter((r) => new Date(r.fecha_hora) > new Date()).length}
                 </div>
                 <div className="stat-label">Reservas Futuras</div>
               </div>
@@ -432,9 +511,32 @@ const MisReservas = () => {
                         <circle cx="12" cy="12" r="3"></circle>
                       </svg>
                     </button>
-                    <button className="action-btn delete-btn" 
-                    title="Cancelar reserva"
-                    onClick={() => handleCancelar(reserva._id)}
+
+                    <button 
+                      className="action-btn edit-btn" 
+                      title="Editar reserva"
+                      onClick={() => iniciarEdicion(reserva)}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                      </svg>
+                    </button>
+
+                    <button 
+                      className="action-btn delete-btn" 
+                      title="Cancelar reserva"
+                      onClick={() => handleCancelar(reserva._id)}
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -467,6 +569,148 @@ const MisReservas = () => {
           </button>
         </div>
       </div>
+
+      {/* Modal de edición */}
+      {showEditModal && editingReserva && (
+        <div className="modal-overlay">
+          <div className="edit-modal">
+            <h2>Modificar Reserva</h2>
+            <p>Cancha: {getNombreCancha(editingReserva.id_cancha)}</p>
+            <p>Fecha: {formatDate(editingReserva.fecha_hora)}</p>
+            
+            <div className="form-section">
+              <h3>Acompañantes</h3>
+              <button 
+                className="add-btn"
+                onClick={() => setEditAcompanantes([...editAcompanantes, {
+                  nombres: '',
+                  apellidos: '',
+                  rut: '',
+                  edad: 0
+                }])}
+              >
+                Agregar Acompañante
+              </button>
+              
+              {editAcompanantes.map((acomp, index) => (
+                <div key={index} className="acompanante-form">
+                  <input
+                    type="text"
+                    placeholder="Nombres"
+                    value={acomp.nombres}
+                    onChange={(e) => {
+                      const newAcomp = [...editAcompanantes];
+                      newAcomp[index].nombres = e.target.value;
+                      setEditAcompanantes(newAcomp);
+                    }}
+                  />
+                  <input
+                    type="text"
+                    placeholder="Apellidos"
+                    value={acomp.apellidos}
+                    onChange={(e) => {
+                      const newAcomp = [...editAcompanantes];
+                      newAcomp[index].apellidos = e.target.value;
+                      setEditAcompanantes(newAcomp);
+                    }}
+                  />
+                  <input
+                    type="text"
+                    placeholder="RUT"
+                    value={acomp.rut}
+                    onChange={(e) => {
+                      const newAcomp = [...editAcompanantes];
+                      newAcomp[index].rut = e.target.value;
+                      setEditAcompanantes(newAcomp);
+                    }}
+                  />
+                  <input
+                    type="number"
+                    placeholder="Edad"
+                    value={acomp.edad}
+                    onChange={(e) => {
+                      const newAcomp = [...editAcompanantes];
+                      newAcomp[index].edad = parseInt(e.target.value) || 0;
+                      setEditAcompanantes(newAcomp);
+                    }}
+                  />
+                  <button 
+                    className="remove-btn"
+                    onClick={() => setEditAcompanantes(editAcompanantes.filter((_, i) => i !== index))}
+                  >
+                    Eliminar
+                  </button>
+                </div>
+              ))}
+            </div>
+
+            <div className="form-section">
+              <h3>Equipamiento</h3>
+              <button 
+                className="equipamiento-btn"
+                onClick={() => setShowEquipamientoModal(true)}
+              >
+                Modificar Equipamiento
+              </button>
+            </div>
+
+            <div className="modal-actions">
+              <button 
+                className="cancel-btn"
+                onClick={() => setShowEditModal(false)}
+              >
+                Cancelar
+              </button>
+              <button 
+                className="save-btn"
+                onClick={handleGuardarCambios}
+              >
+                Guardar Cambios
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de equipamiento */}
+      {showEquipamientoModal && (
+        <div className="modal-overlay">
+          <div className="equipamiento-modal">
+            <h2>Modificar Equipamiento</h2>
+            <table>
+              <thead>
+                <tr>
+                  <th>Equipamiento</th>
+                  <th>Cantidad</th>
+                </tr>
+              </thead>
+              <tbody>
+                {equipamientos.map(equip => (
+                  <tr key={equip._id}>
+                    <td>{equip.nombre}</td>
+                    <td>
+                      <input
+                        type="number"
+                        min="0"
+                        value={editEquipamiento[equip._id] || 0}
+                        onChange={(e) => setEditEquipamiento({
+                          ...editEquipamiento,
+                          [equip._id]: parseInt(e.target.value) || 0
+                        })}
+                      />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <div className="modal-actions">
+              <button onClick={() => setShowEquipamientoModal(false)}>
+                Cerrar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

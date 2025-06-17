@@ -18,4 +18,9 @@ export class AcompananteService {
   async obtenerPorReserva(idReserva: string): Promise<Acompanante[]> {
     return this.acompananteModel.find({ id_reserva: idReserva }).exec();
   }
+
+  async eliminarPorReserva(idReserva: string): Promise<void> {
+    await this.acompananteModel.deleteMany({ id_reserva: idReserva }).exec();
+  }
+
 }

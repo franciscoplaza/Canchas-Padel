@@ -197,6 +197,134 @@ export class ReservaService {
       }
     ]).exec();
   }
+
+  async modificarReserva(
+    idReserva: string,
+    idUsuario: string,
+    cambios: {
+      acompanantes?: any[],
+      equipamiento?: {[key: string]: number}
+    }
+  ): Promise<Reserva> {
+    const session = await this.reservaModel.db.startSession();
+    session.startTransaction();
+
+    try {
+      // 1. Verificar que la reserva existe y pertenece al usuario
+      const reserva = await this.reservaModel.findById(idReserva).session(session);
+      if (!reserva) {
+        throw new NotFoundException('Reserva no encontrada');
+      }
+
+      if (reserva.id_usuario !== idUsuario) {
+        throw new ForbiddenException('No tienes permiso para modificar esta reserva');
+      }
+
+      // 2. Verificar que faltan más de 7 días para la reserva
+      const ahora = new Date();
+      const fechaReserva = new Date(reserva.fecha_hora);
+      const diferenciaTiempo = fechaReserva.getTime() - ahora.getTime();
+      const sieteDiasEnMs = 7 * 24 * 60 * 60 * 1000;
+
+      if (diferenciaTiempo < sieteDiasEnMs) {
+        throw new BadRequestException('No se puede modificar la reserva con menos de 7 días de antelación');
+      }
+
+      // 3. Procesar cambios en acompañantes si existen
+      if (cambios.acompanantes) {
+        // Eliminar acompañantes existentes
+        await this.acompananteService.eliminarPorReserva(idReserva);
+
+        // Crear nuevos acompañantes
+        for (const acompanante of cambios.acompanantes) {
+          await this.acompananteService.crearAcompanante({
+            ...acompanante,
+            id_reserva: idReserva
+          });
+        }
+
+        // Actualizar contador de acompañantes
+        reserva.cantidad_acompanantes = cambios.acompanantes.length;
+      }
+
+      // 4. Procesar cambios en equipamiento si existen
+      if (cambios.equipamiento) {
+        // Devolver stock de equipamiento anterior
+        for (const item of reserva.equipamiento) {
+          await this.equipamientoModel.findOneAndUpdate(
+            { id_equipamiento: item.id_equipamiento },
+            { $inc: { stock: item.cantidad } },
+            { session }
+          );
+        }
+
+        // Procesar nuevo equipamiento
+        let totalEquipamiento = 0;
+        const equipamientoDetalle: {
+          id_equipamiento: string;
+          nombre: string;
+          cantidad: number;
+          costo_unitario: number;
+          subtotal: number;
+        }[] = [];
+
+        for (const [id, cantidad] of Object.entries(cambios.equipamiento)) {
+          if (cantidad > 0) {
+            const equip = await this.equipamientoModel.findById(id).session(session);
+            if (!equip) {
+              throw new NotFoundException(`Equipamiento con ID ${id} no encontrado`);
+            }
+            if (equip.stock < cantidad) {
+              throw new BadRequestException(`Stock insuficiente para ${equip.nombre}`);
+            }
+            
+            totalEquipamiento += equip.costo * cantidad;
+            equipamientoDetalle.push({
+              id_equipamiento: equip.id_equipamiento,
+              nombre: equip.nombre,
+              cantidad,
+              costo_unitario: equip.costo,
+              subtotal: equip.costo * cantidad
+            });
+
+            // Actualizar stock
+            await this.equipamientoModel.findByIdAndUpdate(
+              id,
+              { $inc: { stock: -cantidad } },
+              { session }
+            );
+          }
+        }
+
+        reserva.equipamiento = equipamientoDetalle;
+      }
+
+      // Guardar cambios
+      const reservaActualizada = await reserva.save({ session });
+      await session.commitTransaction();
+
+      // Registrar en historial
+      await this.historialService.registrar(
+        idUsuario,
+        TipoAccion.MODIFICAR_RESERVA,
+        'Reserva',
+        idReserva,
+        {
+          descripcion: `Usuario modificó su reserva para ${reserva.fecha_hora.toLocaleString()}`,
+          cambios: cambios
+        },
+        session
+      );
+
+      return reservaActualizada;
+    } catch (error) {
+      await session.abortTransaction();
+      throw error;
+    } finally {
+      session.endSession();
+    }
+  }
+
  // --- NUEVO MÉTODO PARA CANCELAR RESERVA ---
   async cancelarReserva(idReserva: string, idUsuarioQueCancela: string) {
     const session = await this.reservaModel.db.startSession();
