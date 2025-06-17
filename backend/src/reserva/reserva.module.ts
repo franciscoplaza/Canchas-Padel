@@ -9,7 +9,7 @@ import { Reserva, ReservaSchema } from './reserva.schema';
 import { Cancha, CanchaSchema } from '../cancha/cancha.schema';
 import { Usuario, UsuarioSchema } from '../usuario/usuario.schema';
 import { Equipamiento, EquipamientoSchema } from '../equipamiento/equipamiento.schema';
-
+import { HistorialModule } from '../historial/historial.module';
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Reserva.name, schema: ReservaSchema }]),
@@ -18,6 +18,7 @@ import { Equipamiento, EquipamientoSchema } from '../equipamiento/equipamiento.s
     MongooseModule.forFeature([{ name: Equipamiento.name, schema: EquipamientoSchema }]),
     UsuarioModule,
     CanchaModule, 
+    HistorialModule,
   ],
   providers: [ReservaService],
   controllers: [ReservaController],

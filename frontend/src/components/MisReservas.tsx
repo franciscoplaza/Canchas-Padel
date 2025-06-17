@@ -2,6 +2,7 @@
 "use client"
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
+import { cancelarReserva } from "../services/reservaService"
 import "./MisReservas.css"
 
 interface Cancha {
@@ -21,6 +22,7 @@ const MisReservas = () => {
   const [canchas, setCanchas] = useState<Cancha[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
+  const [cancelMessage, setCancelMessage] = useState({ type: "", text: "" })
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -68,6 +70,28 @@ const MisReservas = () => {
 
     fetchData()
   }, [navigate])
+   // ---  Función para manejar la cancelación ---
+   const handleCancelar = async (reservaId: string) => {
+    // Usamos window.confirm para pedir una confirmación simple al usuario.
+    if (!window.confirm("¿Estás seguro de que deseas cancelar esta reserva?")) {
+      return; // Si el usuario dice "No", no hacemos nada.
+    }
+
+    try {
+      setCancelMessage({ type: "", text: "" }); // Limpiamos mensajes anteriores.
+      const response = await cancelarReserva(reservaId); // Llamamos a la función del servicio.
+      
+      // Si todo sale bien, mostramos un mensaje de éxito.
+      setCancelMessage({ type: "success", text: response.message });
+      
+      // Actualizamos la lista de reservas en la pantalla para quitar la que se canceló.
+      setReservas(reservas.filter((r) => r._id !== reservaId));
+
+    } catch (err: any) {
+      // Si el backend devuelve un error (ej: "no se puede cancelar con menos de 7 días"), lo mostramos.
+      setCancelMessage({ type: "error", text: err.message });
+    }
+  };
 
   const formatDate = (dateString: string) => {
     try {
@@ -151,6 +175,12 @@ const MisReservas = () => {
           <h1 className="user-title">Mis Reservas</h1>
           <p className="user-subtitle">Gestiona tus reservas de canchas deportivas</p>
         </div>
+
+         {cancelMessage.text && (
+          <div className={`cancel-message ${cancelMessage.type}`}>
+            {cancelMessage.text}
+          </div>
+        )}
 
         {reservas.length === 0 ? (
           <div className="no-reservas">
@@ -284,7 +314,10 @@ const MisReservas = () => {
                         <circle cx="12" cy="12" r="3"></circle>
                       </svg>
                     </button>
-                    <button className="action-btn delete-btn" title="Cancelar reserva">
+                    <button className="action-btn delete-btn" 
+                    title="Cancelar reserva"
+                    onClick={() => handleCancelar(reserva._id)}
+                    >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="18"

@@ -13,6 +13,7 @@ import { UsuarioModule } from './usuario/usuario.module';
 import { CanchaModule } from './cancha/cancha.module';
 import { EquipamientoModule } from './equipamiento/equipamiento.module'; 
 import { SaldoModule } from './saldo/saldo.module';
+import { HistorialModule } from './historial/historial.module';
 
 @Module({
   imports: [
@@ -24,7 +25,8 @@ import { SaldoModule } from './saldo/saldo.module';
     ReservaModule,    // Asegúrate de que ReservaModule está aquí
     UsuarioModule,    // Agrega UsuarioModule
     CanchaModule,
-    EquipamientoModule,     
+    EquipamientoModule,    
+    HistorialModule, 
     MongooseModule.forFeature([
       { name: Usuario.name, schema: UsuarioSchema },
       { name: Cancha.name, schema: CanchaSchema },

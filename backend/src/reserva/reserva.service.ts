@@ -1,12 +1,13 @@
 // backend/src/reserva/reserva.service.ts
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException, ForbiddenException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, ClientSession } from 'mongoose';
 import { Reserva } from './reserva.schema';
 import { Cancha } from '../cancha/cancha.schema';
 import { Usuario } from '../usuario/usuario.schema';
 import { Equipamiento } from '../equipamiento/equipamiento.schema';
-
+import { HistorialService } from '../historial/historial.service'; 
+import { TipoAccion } from '../historial/historial.schema';
 @Injectable()
 export class ReservaService {
   private readonly HORARIOS_DISPONIBLES = [
@@ -18,7 +19,8 @@ export class ReservaService {
     @InjectModel(Reserva.name) private reservaModel: Model<Reserva>,
     @InjectModel(Cancha.name) private canchaModel: Model<Cancha>,
     @InjectModel(Usuario.name) private usuarioModel: Model<Usuario>,
-    @InjectModel(Equipamiento.name) private equipamientoModel: Model<Equipamiento>
+    @InjectModel(Equipamiento.name) private equipamientoModel: Model<Equipamiento>,
+    private readonly historialService: HistorialService,
   ) {}
 
   async crearReserva(rutUsuario: string, idCancha: string, fecha: string, hora_inicio: string, equipamiento: {[key: string]: number} = {}) {
@@ -175,5 +177,96 @@ export class ReservaService {
       }
     ]).exec();
   }
+ // --- NUEVO MÉTODO PARA CANCELAR RESERVA ---
+  async cancelarReserva(idReserva: string, idUsuarioQueCancela: string) {
+    const session = await this.reservaModel.db.startSession();
+    session.startTransaction();
 
+    try {
+      const reserva = await this.reservaModel.findById(idReserva).session(session);
+      if (!reserva) {
+        throw new NotFoundException('Reserva no encontrada');
+      }
+
+      const usuarioQueCancela = await this.usuarioModel.findOne({ rut: idUsuarioQueCancela }).session(session);
+      if (!usuarioQueCancela) {
+          throw new NotFoundException('Usuario que cancela no encontrado');
+      }
+      
+      // Solo el usuario que hizo la reserva o un admin pueden cancelar
+      if (reserva.id_usuario !== usuarioQueCancela.rut && usuarioQueCancela.rol !== 'admin') {
+          throw new ForbiddenException('No tienes permiso para cancelar esta reserva.');
+      }
+      
+      // Lógica de negocio: Cancelación con 7 días de antelación
+      const ahora = new Date();
+      const fechaReserva = new Date(reserva.fecha_hora);
+      const diferenciaTiempo = fechaReserva.getTime() - ahora.getTime();
+      const sieteDiasEnMs = 7 * 24 * 60 * 60 * 1000;
+
+      if (diferenciaTiempo < sieteDiasEnMs) {
+        throw new BadRequestException('No se puede cancelar la reserva con menos de 7 días de antelación.');
+      }
+
+      // Calcular monto total a devolver
+      const montoEquipamiento = reserva.equipamiento.reduce((acc, item) => acc + item.subtotal, 0);
+      const montoTotalDevuelto = reserva.precio + montoEquipamiento;
+
+      // Devolver saldo al usuario que hizo la reserva
+      const usuarioReserva = await this.usuarioModel.findOneAndUpdate(
+        { rut: reserva.id_usuario },
+        { 
+          $inc: { saldo: montoTotalDevuelto },
+          $push: { 
+            transacciones: {
+              monto: montoTotalDevuelto,
+              tipo: 'devolucion',
+              fecha: new Date(),
+              descripcion: `Devolución por cancelación de reserva ${reserva._id}`
+            }
+          }
+        },
+        { session, new: true }
+      );
+      if(!usuarioReserva) {
+          throw new NotFoundException('No se encontró el usuario original de la reserva para devolver el saldo.');
+      }
+
+      // Devolver stock de equipamiento
+      for (const item of reserva.equipamiento) {
+        await this.equipamientoModel.findOneAndUpdate(
+          { id_equipamiento: item.id_equipamiento },
+          { $inc: { stock: item.cantidad } },
+          { session }
+        );
+      }
+
+      // Eliminar la reserva
+      await this.reservaModel.findByIdAndDelete(idReserva, { session });
+      
+      // Registrar en el historial
+       await this.historialService.registrar(
+        usuarioQueCancela.id, // Ahora pasamos el ID correcto que espera el historial
+        TipoAccion.CANCELAR_RESERVA,
+        'Reserva',
+        idReserva,
+        {
+          descripcion: `Reserva para ${reserva.fecha_hora.toLocaleString()} fue cancelada por ${usuarioQueCancela.rut}.`,
+          montoDevuelto: montoTotalDevuelto,
+          usuarioReserva: reserva.id_usuario
+        },
+        session
+      );
+      
+      await session.commitTransaction();
+      return { message: 'Reserva cancelada y saldo devuelto exitosamente.' };
+
+    } catch (error) {
+      await session.abortTransaction();
+      throw error; // Relanza el error para que Nest lo maneje
+    } finally {
+      session.endSession();
+    }
+  }
 }
+

@@ -1,8 +1,9 @@
 // backend/src/cancha/cancha.controller.ts
-import { Controller, Get, Post, Put, Body, Delete, Param, UseGuards, NotFoundException } from '@nestjs/common';
+import { Controller, Get, Post, Put, Body, Delete, Param, UseGuards, NotFoundException, Req } from '@nestjs/common';
 import { CanchaService } from './cancha.service';
 import { Cancha } from './cancha.schema';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { Request } from 'express';
 
 @Controller('cancha')
 export class CanchaController {
@@ -10,11 +11,14 @@ export class CanchaController {
 
   @Post()
   @UseGuards(JwtAuthGuard)
+
   async create(
     @Body('numero') numero: number,
-    @Body('precio') precio: number
+    @Body('precio') precio: number,
+    @Req() req,
   ) {
-    return this.canchaService.create({ numero, precio });
+    const adminId = req.user.userId;
+    return this.canchaService.create({ numero, precio },adminId);
   }
 
   @Get()
@@ -24,8 +28,9 @@ export class CanchaController {
 
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
-  async remove(@Param('id') id: string) {
-    const result = await this.canchaService.remove(id);
+  async remove(@Param('id') id: string, @Req() req) {
+    const adminId = req.user.userId;
+    const result = await this.canchaService.remove(id,adminId);
     if (!result) {
       throw new NotFoundException(`Cancha con ID ${id} no encontrada`);
     }
@@ -36,8 +41,10 @@ export class CanchaController {
   @UseGuards(JwtAuthGuard)
   async updatePrecio(
     @Param('id') id: string,
-    @Body('precio') precio: number
+    @Body('precio') precio: number,
+    @Req() req,
   ) {
-    return this.canchaService.updatePrecio(id, precio);
+    const adminId = req.user.userId;
+    return this.canchaService.updatePrecio(id, precio, adminId);
   }
 }
