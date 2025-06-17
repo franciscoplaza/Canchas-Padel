@@ -108,20 +108,7 @@ const OpcionesAdmin = () => {
             </div>
           </div>
         </div>
-        <div className="admin-stats">
-          <div className="stat-card"> 
-            <div className="stat-value">12</div>
-            <div className="stat-label">Canchas Activas</div>
-          </div>
-          <div className="stat-card">
-            <div className="stat-value">48</div>
-            <div className="stat-label">Reservas Pendientes</div>
-          </div>
-          <div className="stat-card">
-            <div className="stat-value">156</div>
-            <div className="stat-label">Reservas Completadas</div>
-          </div>
-        </div>
+        
 
         <div className="admin-actions">
           {/* <button className="secondary-btn" onClick={() => navigate("/")}>

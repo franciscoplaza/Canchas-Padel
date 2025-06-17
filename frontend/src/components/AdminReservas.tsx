@@ -222,7 +222,6 @@ const AdminReservas = () => {
                 <th>Fecha y Hora</th>
                 <th>Nombre Usuario</th>
                 <th>Cancha</th>
-                <th>Estado</th>
                 <th>Acciones</th>
               </tr>
             </thead>
@@ -233,9 +232,6 @@ const AdminReservas = () => {
                     <td>{formatDate(reserva.fecha_hora)}</td>
                     <td>{reserva.usuario?.nombreUsuario || "Usuario desconocido"}</td>
                     <td>{getNombreCancha(reserva.id_cancha)}</td>
-                    <td>
-                      <span className="status-badge status-pending">Pendiente</span>
-                    </td>
                     <td>
                       <div className="action-buttons">
                         <button className="action-btn view-btn" title="Ver detalles">
