@@ -274,3 +274,7 @@ button[type="submit"]:hover {
   padding: 20px; /* Agrega padding para espacio en móviles */
   z-index: 1000;
 }
+
+.eliminar-btn {
+  margin-left: 16px; /* Ajusta según lo que necesites */
+}
