@@ -5,6 +5,13 @@ import "./OpcionesAdmin.css"
 
 const OpcionesAdmin = () => {
   const navigate = useNavigate()
+  const token = localStorage.getItem("token");
+  const usuario = JSON.parse(localStorage.getItem("usuario") || "{}");
+
+  if (!token || usuario.rol !== "admin") {
+    navigate("/login");
+    return null; // No renderizar nada mientras redirige
+  }
 
   return (
     <div className="admin-container">

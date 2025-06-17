@@ -32,6 +32,14 @@ const GestionarEquipamiento = () => {
   })
   const navigate = useNavigate()
 
+  const token = localStorage.getItem("token");
+  const usuario = JSON.parse(localStorage.getItem("usuario") || "{}");
+
+  if (!token || usuario.rol !== "admin") {
+    navigate("/login");
+    return null; // No renderizar nada mientras redirige
+  }
+
   useEffect(() => {
     const token = localStorage.getItem("token")
     if (!token) {
