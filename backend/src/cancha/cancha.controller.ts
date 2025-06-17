@@ -35,10 +35,10 @@ export class CanchaController {
 
   @Put(':id')
   @UseGuards(JwtAuthGuard)
-  async updatePrecio(
+  async updateCancha(
     @Param('id') id: string,
-    @Body('precio') precio: number
+    @Body() updateData: { precio?: number, capacidad_maxima?: number }
   ) {
-    return this.canchaService.updatePrecio(id, precio);
+    return this.canchaService.updateCancha(id, updateData);
   }
 }

@@ -63,5 +63,27 @@ async create(data: { numero: number; precio: number; capacidad_maxima?: number }
 
     return canchaActualizada;
   }
+
+  async updateCancha(
+    id: string,
+    updateData: { precio?: number; capacidad_maxima?: number }
+  ): Promise<Cancha> {
+    // 1. Busca y actualiza la cancha
+    const canchaActualizada = await this.canchaModel
+      .findByIdAndUpdate(
+        id,
+        { $set: updateData }, // Actualiza ambos campos
+        { new: true } // Devuelve el documento actualizado
+      )
+      .exec();
+
+    // 2. Si no se encontró la cancha, lanza un error
+    if (!canchaActualizada) {
+      throw new NotFoundException(`Cancha con ID ${id} no encontrada`);
+    }
+
+    // 3. Retorna la cancha actualizada (TypeScript ahora sabe que siempre hay un valor de retorno)
+    return canchaActualizada;
+  }
   
 }

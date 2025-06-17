@@ -95,9 +95,9 @@ const Canchas = () => {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           precio: editData.precio,
-          capacidad_maxima: editData.capacidad_maxima
+          capacidad_maxima: editData.capacidad_maxima  // ✅ Envía ambos campos
         }),
       })
 
