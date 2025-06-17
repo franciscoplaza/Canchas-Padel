@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import './CrearReserva.css';
 
 interface Cancha {
+  capacidad_maxima: number;
   _id: string;
   id_cancha: string;
   precio: number;
@@ -32,6 +33,15 @@ const CrearReserva = () => {
     '09:00', '10:30', '12:00',
     '14:00', '15:30', '17:00', '18:30', '20:00'
   ];
+
+  const [acompanantes, setAcompanantes] = useState<any[]>([]);
+  const [showAcompanantesModal, setShowAcompanantesModal] = useState(false);
+  const [nuevoAcompanante, setNuevoAcompanante] = useState({
+    nombres: '',
+    apellidos: '',
+    rut: '',
+    edad: ''
+  });
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -90,6 +100,27 @@ const CrearReserva = () => {
     }, 0);
   };
 
+  
+  const agregarAcompanante = () => {
+    if (!nuevoAcompanante.nombres || !nuevoAcompanante.apellidos || 
+        !nuevoAcompanante.rut || !nuevoAcompanante.edad) {
+      alert('Por favor complete todos los campos del acompañante');
+      return;
+    }
+
+    setAcompanantes([...acompanantes, nuevoAcompanante]);
+    setNuevoAcompanante({
+      nombres: '',
+      apellidos: '',
+      rut: '',
+      edad: ''
+    });
+  };
+
+  const eliminarAcompanante = (index: number) => {
+    setAcompanantes(acompanantes.filter((_, i) => i !== index));
+  };
+
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
@@ -101,6 +132,12 @@ const CrearReserva = () => {
     const canchaSeleccionada = canchas.find(c => c.id_cancha === canchaId);
     if (!canchaSeleccionada) {
       alert('Cancha no encontrada');
+      return;
+    }
+
+    if (acompanantes.length > canchaSeleccionada.capacidad_maxima - 1) {
+      alert(`Esta cancha tiene capacidad para ${canchaSeleccionada.capacidad_maxima} personas (incluyéndote). 
+             Has seleccionado ${acompanantes.length} acompañantes, lo que excede el límite.`);
       return;
     }
 
@@ -130,7 +167,8 @@ const CrearReserva = () => {
           id_cancha: canchaId,
           fecha,
           hora_inicio: hora,
-          equipamiento: equipamientoSeleccionado
+          equipamiento: equipamientoSeleccionado,
+          acompanantes
         }),
       });
 
@@ -198,15 +236,25 @@ const CrearReserva = () => {
           </select>
         </div>
 
-        <button 
-          type="button" 
-          className="equipamiento-btn"
-          onClick={() => setShowEquipamientoModal(true)}
-        >
-          Agregar Equipamiento
-        </button>
+        <div className="buttons-group">
+          <button 
+            type="button" 
+            className="equipamiento-btn"
+            onClick={() => setShowEquipamientoModal(true)}
+          >
+            Agregar Equipamiento
+          </button>
 
-        <button type="submit">Reservar</button>
+          <button 
+            type="button" 
+            className="acompanantes-btn"
+            onClick={() => setShowAcompanantesModal(true)}
+          >
+            Agregar Acompañantes ({acompanantes.length})
+          </button>
+        </div>
+
+        <button type="submit" className="reservar-btn">Reservar</button>
       </form>
 
       {showEquipamientoModal && (
@@ -243,6 +291,86 @@ const CrearReserva = () => {
             </div>
             <div className="modal-actions">
               <button onClick={() => setShowEquipamientoModal(false)}>Cerrar</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showAcompanantesModal && (
+        <div className="modal-overlay">
+          <div className="acompanantes-modal">
+            <h2>Agregar Acompañantes</h2>
+            
+            <div className="acompanantes-form">
+              <div className="form-group">
+                <label>Nombres:</label>
+                <input
+                  type="text"
+                  value={nuevoAcompanante.nombres}
+                  onChange={(e) => setNuevoAcompanante({...nuevoAcompanante, nombres: e.target.value})}
+                />
+              </div>
+              
+              <div className="form-group">
+                <label>Apellidos:</label>
+                <input
+                  type="text"
+                  value={nuevoAcompanante.apellidos}
+                  onChange={(e) => setNuevoAcompanante({...nuevoAcompanante, apellidos: e.target.value})}
+                />
+              </div>
+              
+              <div className="form-group">
+                <label>RUT:</label>
+                <input
+                  type="text"
+                  value={nuevoAcompanante.rut}
+                  onChange={(e) => setNuevoAcompanante({...nuevoAcompanante, rut: e.target.value})}
+                />
+              </div>
+              
+              <div className="form-group">
+                <label>Edad:</label>
+                <input
+                  type="number"
+                  value={nuevoAcompanante.edad}
+                  onChange={(e) => setNuevoAcompanante({...nuevoAcompanante, edad: e.target.value})}
+                />
+              </div>
+              
+              <button 
+                type="button" 
+                className="agregar-btn"
+                onClick={agregarAcompanante}
+              >
+                Agregar Acompañante
+              </button>
+            </div>
+            
+            <div className="acompanantes-list">
+              <h3>Acompañantes agregados ({acompanantes.length})</h3>
+              {acompanantes.length === 0 ? (
+                <p>No hay acompañantes agregados</p>
+              ) : (
+                <ul>
+                  {acompanantes.map((acompanante, index) => (
+                    <li key={index}>
+                      <span>{acompanante.nombres} {acompanante.apellidos} (RUT: {acompanante.rut}, Edad: {acompanante.edad})</span>
+                      <button 
+                        type="button"
+                        className="eliminar-btn"
+                        onClick={() => eliminarAcompanante(index)}
+                      >
+                        Eliminar
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+            
+            <div className="modal-actions">
+              <button onClick={() => setShowAcompanantesModal(false)}>Cerrar</button>
             </div>
           </div>
         </div>

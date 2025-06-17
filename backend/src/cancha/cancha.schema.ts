@@ -11,6 +11,10 @@ export class Cancha {
 
   @Prop({ required: true })
   precio: number;
+
+  @Prop({ required: true, default: 4 })
+  capacidad_maxima: number;
+
 }
 
 export const CanchaSchema = SchemaFactory.createForClass(Cancha);

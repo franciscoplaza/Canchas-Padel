@@ -197,3 +197,54 @@ button[type="submit"]:hover {
     padding: 0.7rem;
   }
 }
+
+.acompanante-form {
+  margin-bottom: 20px;
+}
+
+.acompanante-form .form-group {
+  margin-bottom: 15px;
+}
+
+.acompanante-form label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 600;
+}
+
+.acompanante-form input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.acompanantes-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 15px 0;
+}
+
+.acompanantes-table th, 
+.acompanantes-table td {
+  padding: 10px;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+.acompanantes-table th {
+  background-color: #f2f2f2;
+}
+
+.delete-acompanante-btn {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.delete-acompanante-btn:hover {
+  background-color: #c0392b;
+}

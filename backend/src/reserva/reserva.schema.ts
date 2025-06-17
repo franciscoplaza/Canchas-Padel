@@ -38,6 +38,12 @@ export class Reserva {
 
   @Prop({ enum: ['pendiente', 'confirmada', 'cancelada'], default: 'confirmada' })
   estado: string;
+
+  @Prop({ required: true })
+  capacidad_cancha: number;
+
+  @Prop({ required: true, default: 0 })
+  cantidad_acompanantes: number;
 }
 
 export const ReservaSchema = SchemaFactory.createForClass(Reserva);

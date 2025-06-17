@@ -8,6 +8,7 @@ interface Cancha {
   _id: string
   id_cancha: string
   precio: number
+  capacidad_maxima: number
 }
 
 const Canchas = () => {
@@ -15,10 +16,14 @@ const Canchas = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
   const [editingId, setEditingId] = useState<string | null>(null)
-  const [nuevoPrecio, setNuevoPrecio] = useState<number>(0)
+  const [editData, setEditData] = useState({
+    precio: 0,
+    capacidad_maxima: 0
+  })
   const [showAddForm, setShowAddForm] = useState(false)
   const [nuevoNumero, setNuevoNumero] = useState<number | "">("")
   const [nuevoPrecioAdd, setNuevoPrecioAdd] = useState<number | "">("")
+  const [nuevaCapacidadAdd, setNuevaCapacidadAdd] = useState<number | "">("")
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -66,16 +71,19 @@ const Canchas = () => {
 
   const iniciarEdicion = (cancha: Cancha) => {
     setEditingId(cancha._id)
-    setNuevoPrecio(cancha.precio)
+    setEditData({
+      precio: cancha.precio,
+      capacidad_maxima: cancha.capacidad_maxima
+    })
   }
 
   const cancelarEdicion = () => {
     setEditingId(null)
   }
 
-  const actualizarPrecio = async (id: string) => {
-    if (nuevoPrecio <= 0) {
-      alert("El precio debe ser mayor a 0")
+  const actualizarCancha = async (id: string) => {
+    if (editData.precio <= 0 || editData.capacidad_maxima <= 0) {
+      alert("El precio y la capacidad deben ser mayores a 0")
       return
     }
 
@@ -87,10 +95,13 @@ const Canchas = () => {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ precio: nuevoPrecio }),
+        body: JSON.stringify({ 
+          precio: editData.precio,
+          capacidad_maxima: editData.capacidad_maxima
+        }),
       })
 
-      if (!response.ok) throw new Error("Error al actualizar precio")
+      if (!response.ok) throw new Error("Error al actualizar cancha")
 
       const data = await response.json()
       setCanchas(canchas.map((c) => (c._id === id ? data : c)))
@@ -102,7 +113,7 @@ const Canchas = () => {
 
   const agregarCancha = async () => {
     // Validar campos no vacíos (incluyendo 0 como valor válido aquí)
-    if (nuevoNumero === "" || nuevoPrecioAdd === "") {
+    if (nuevoNumero === "" || nuevoPrecioAdd === "" || nuevaCapacidadAdd === "") {
       window.alert("Error: Todos los campos son obligatorios")
       return
     }
@@ -110,9 +121,10 @@ const Canchas = () => {
     // Ahora validamos específicamente los valores numéricos
     const numCancha = Number(nuevoNumero)
     const precio = Number(nuevoPrecioAdd)
+    const capacidad = Number(nuevaCapacidadAdd)
 
-    if (numCancha <= 0 || precio <= 0) {
-      window.alert("El número de cancha y el precio deben ser valores mayores a cero.")
+    if (numCancha <= 0 || precio <= 0 || capacidad <= 0) {
+      window.alert("El número de cancha, precio y capacidad deben ser valores mayores a cero.")
       return
     }
 
@@ -132,6 +144,7 @@ const Canchas = () => {
         body: JSON.stringify({
           numero: numCancha,
           precio: precio,
+          capacidad_maxima: capacidad
         }),
       })
 
@@ -152,9 +165,10 @@ const Canchas = () => {
       setShowAddForm(false)
       setNuevoNumero("")
       setNuevoPrecioAdd("")
+      setNuevaCapacidadAdd("")
 
       window.alert(
-        `✅ Cancha creada exitosamente\n\nCancha ${numCancha} registrada con precio $${precio.toLocaleString()}`,
+        `✅ Cancha creada exitosamente\n\nCancha ${numCancha} registrada con precio $${precio.toLocaleString()} y capacidad para ${capacidad} personas`,
       )
     } catch (err) {
       if (err instanceof Error && !err.message.includes("ya existe")) {
@@ -261,6 +275,16 @@ const Canchas = () => {
                   placeholder="Ej: 15000"
                 />
               </div>
+              <div className="form-row">
+                <label>Capacidad Máxima:</label>
+                <input
+                  type="number"
+                  min="1"
+                  value={nuevaCapacidadAdd}
+                  onChange={(e) => setNuevaCapacidadAdd(e.target.value ? parseInt(e.target.value) : "")}
+                  placeholder="Ej: 4"
+                />
+              </div>
               <div className="form-actions">
                 <button
                   onClick={() => {
@@ -301,6 +325,7 @@ const Canchas = () => {
               <tr>
                 <th>Nombre</th>
                 <th>Precio</th>
+                <th>Capacidad</th>
                 <th>Acciones</th>
               </tr>
             </thead>
@@ -313,18 +338,32 @@ const Canchas = () => {
                       {editingId === cancha._id ? (
                         <input
                           type="number"
-                          value={nuevoPrecio}
-                          onChange={(e) => setNuevoPrecio(Number(e.target.value))}
+                          min="0"
+                          value={editData.precio}
+                          onChange={(e) => setEditData({...editData, precio: Number(e.target.value)})}
                           className="precio-input"
                         />
                       ) : (
                         `$${cancha.precio.toLocaleString()}`
                       )}
                     </td>
+                    <td>
+                      {editingId === cancha._id ? (
+                        <input
+                          type="number"
+                          min="1"
+                          value={editData.capacidad_maxima}
+                          onChange={(e) => setEditData({...editData, capacidad_maxima: Number(e.target.value)})}
+                          className="precio-input"
+                        />
+                      ) : (
+                        `${cancha.capacidad_maxima} personas`
+                      )}
+                    </td>
                     <td className="acciones-cell">
                       {editingId === cancha._id ? (
                         <>
-                          <button onClick={() => actualizarPrecio(cancha._id)} className="save-btn">
+                          <button onClick={() => actualizarCancha(cancha._id)} className="save-btn">
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
                               width="16"
@@ -403,7 +442,7 @@ const Canchas = () => {
                 ))
               ) : (
                 <tr>
-                  <td colSpan={3} className="no-results">
+                  <td colSpan={4} className="no-results">
                     No hay canchas disponibles. ¡Agrega una nueva!
                   </td>
                 </tr>

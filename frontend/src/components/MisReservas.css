@@ -322,3 +322,31 @@
     margin: 5px 0;
   }
 }
+
+.acompanantes-list {
+  margin-top: 15px;
+  padding: 15px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+}
+
+.acompanantes-list h4 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  color: #2c3e50;
+}
+
+.acompanantes-list ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.acompanantes-list li {
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.acompanantes-list li:last-child {
+  border-bottom: none;
+}

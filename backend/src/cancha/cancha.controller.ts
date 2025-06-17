@@ -12,9 +12,10 @@ export class CanchaController {
   @UseGuards(JwtAuthGuard)
   async create(
     @Body('numero') numero: number,
-    @Body('precio') precio: number
+    @Body('precio') precio: number,
+    @Body('capacidad_maxima') capacidad_maxima?: number
   ) {
-    return this.canchaService.create({ numero, precio });
+    return this.canchaService.create({ numero, precio, capacidad_maxima });
   }
 
   @Get()

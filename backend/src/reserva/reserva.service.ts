@@ -6,6 +6,7 @@ import { Reserva } from './reserva.schema';
 import { Cancha } from '../cancha/cancha.schema';
 import { Usuario } from '../usuario/usuario.schema';
 import { Equipamiento } from '../equipamiento/equipamiento.schema';
+import { AcompananteService } from '../acompanante/acompanante.service';
 
 @Injectable()
 export class ReservaService {
@@ -18,10 +19,11 @@ export class ReservaService {
     @InjectModel(Reserva.name) private reservaModel: Model<Reserva>,
     @InjectModel(Cancha.name) private canchaModel: Model<Cancha>,
     @InjectModel(Usuario.name) private usuarioModel: Model<Usuario>,
-    @InjectModel(Equipamiento.name) private equipamientoModel: Model<Equipamiento>
+    @InjectModel(Equipamiento.name) private equipamientoModel: Model<Equipamiento>,
+    private readonly acompananteService: AcompananteService,
   ) {}
 
-  async crearReserva(rutUsuario: string, idCancha: string, fecha: string, hora_inicio: string, equipamiento: {[key: string]: number} = {}) {
+  async crearReserva(rutUsuario: string, idCancha: string, fecha: string, hora_inicio: string, equipamiento: {[key: string]: number} = {}, acompanantes: any[] = []) {
     // Validar cancha
     const cancha = await this.canchaModel.findOne({ id_cancha: idCancha });
     if (!cancha) {
@@ -32,6 +34,13 @@ export class ReservaService {
     const usuario = await this.usuarioModel.findOne({ rut: rutUsuario });
     if (!usuario) {
       throw new NotFoundException('Usuario no encontrado');
+    }
+
+    if (acompanantes.length > cancha.capacidad_maxima - 1) {
+      throw new BadRequestException(
+        `La cancha tiene capacidad para ${cancha.capacidad_maxima} personas (incluyendo al titular). ` +
+        `Has seleccionado ${acompanantes.length} acompañantes, lo que excede el límite.`
+      );
     }
 
     // Validar equipamiento
@@ -133,10 +142,20 @@ export class ReservaService {
         id_cancha: idCancha,
         precio: cancha.precio,
         equipamiento: equipamientoDetalle,
-        estado: 'confirmada'
+        estado: 'confirmada',
+        capacidad_cancha: cancha.capacidad_maxima,
+        cantidad_acompanantes: acompanantes.length
       });
 
-      await reserva.save({ session });
+      const reservaCreada = await reserva.save({ session });
+
+      // Crear acompañantes
+      for (const acompanante of acompanantes) {
+        await this.acompananteService.crearAcompanante({
+          ...acompanante,
+          id_reserva: reservaCreada._id.toString()
+        });
+      }
 
       await session.commitTransaction();
       return reserva;
@@ -174,6 +193,17 @@ export class ReservaService {
         }
       }
     ]).exec();
+  }
+
+  async obtenerAcompanantes(idReserva: string) {
+    // Validar que la reserva existe
+    const reserva = await this.reservaModel.findById(idReserva);
+    if (!reserva) {
+      throw new NotFoundException('Reserva no encontrada');
+    }
+
+    // Obtener los acompañantes de esta reserva
+    return this.acompananteService.obtenerPorReserva(idReserva);
   }
 
 }

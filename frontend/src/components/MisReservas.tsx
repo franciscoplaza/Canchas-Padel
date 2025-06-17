@@ -8,12 +8,22 @@ interface Cancha {
   _id: string
   id_cancha: string
   precio: number
+  capacidad_maxima: number
 }
 
 interface Reserva {
   _id: string
   fecha_hora: string
   id_cancha: string
+  cantidad_acompanantes: number
+  capacidad_cancha: number
+}
+
+interface Acompanante {
+  nombres: string
+  apellidos: string
+  rut: string
+  edad: number
 }
 
 const MisReservas = () => {
@@ -22,6 +32,8 @@ const MisReservas = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
   const navigate = useNavigate()
+  const [acompanantesPorReserva, setAcompanantesPorReserva] = useState<{[key: string]: Acompanante[]}>({})
+  const [expandedReservas, setExpandedReservas] = useState<string[]>([])
 
   useEffect(() => {
     const token = localStorage.getItem("token")
@@ -56,8 +68,36 @@ const MisReservas = () => {
 
         if (!reservasResponse.ok) throw new Error("Error al obtener reservas")
         const reservasData = await reservasResponse.json()
-        setReservas(reservasData)
+        
+        // Mapear las reservas para incluir capacidad_cancha
+        const reservasConCapacidad = reservasData.map((reserva: any) => {
+          const cancha = canchas.find(c => c._id === reserva.id_cancha || c.id_cancha === reserva.id_cancha)
+          return {
+            ...reserva,
+            capacidad_cancha: cancha?.capacidad_maxima || 0
+          }
+        })
+        
+        setReservas(reservasConCapacidad)
         console.log("Reservas obtenidas:", reservasData.length)
+
+        // 3. Obtener acompañantes para cada reserva
+        const acompanantesPromises = reservasData.map(async (reserva: any) => {
+          const response = await fetch(`http://localhost:3000/acompanantes/reserva/${reserva._id}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          })
+          if (!response.ok) return []
+          return response.json()
+        })
+
+        const acompanantesData = await Promise.all(acompanantesPromises)
+        
+        const acompanantesMap = reservasData.reduce((acc: any, reserva: any, index: number) => {
+          acc[reserva._id] = acompanantesData[index] || []
+          return acc
+        }, {})
+
+        setAcompanantesPorReserva(acompanantesMap)
       } catch (err) {
         console.error("Error al cargar datos:", err)
         setError(err instanceof Error ? err.message : "Error desconocido")
@@ -100,6 +140,14 @@ const MisReservas = () => {
       console.error("Error al obtener nombre de cancha:", error)
       return `Cancha ${idCancha}` // Fallback seguro
     }
+  }
+
+  const toggleExpandReserva = (reservaId: string) => {
+    setExpandedReservas(prev => 
+      prev.includes(reservaId) 
+        ? prev.filter(id => id !== reservaId) 
+        : [...prev, reservaId]
+    )
   }
 
   if (loading)
@@ -266,9 +314,77 @@ const MisReservas = () => {
                         })}
                       </span>
                     </div>
+                    <div className="reserva-detail">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="reserva-icon"
+                      >
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                      </svg>
+                      <span className="detail-label">Acompañantes:</span>
+                      <span className="detail-value">
+                        {acompanantesPorReserva[reserva._id]?.length || 0}
+                      </span>
+                    </div>
+                    <div className="reserva-detail">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="reserva-icon"
+                      >
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                      </svg>
+                      <span className="detail-label">Asistencia:</span>
+                      <span className="detail-value">
+                        {(acompanantesPorReserva[reserva._id]?.length || 0) + 1}/{reserva.capacidad_cancha}
+                      </span>
+                    </div>
                   </div>
+
+                  {expandedReservas.includes(reserva._id) && (
+                    <div className="acompanantes-list">
+                      <h4>Acompañantes:</h4>
+                      {acompanantesPorReserva[reserva._id]?.length > 0 ? (
+                        <ul>
+                          {acompanantesPorReserva[reserva._id].map((acomp, index) => (
+                            <li key={index}>
+                              {acomp.nombres} {acomp.apellidos} (RUT: {acomp.rut}, Edad: {acomp.edad})
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <p>No hay acompañantes registrados</p>
+                      )}
+                    </div>
+                  )}
+
                   <div className="reserva-actions">
-                    <button className="action-btn view-btn" title="Ver detalles">
+                    <button 
+                      className="action-btn view-btn" 
+                      title="Ver detalles"
+                      onClick={() => toggleExpandReserva(reserva._id)}
+                    >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="18"

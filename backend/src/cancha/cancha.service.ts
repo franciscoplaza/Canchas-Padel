@@ -9,7 +9,7 @@ export class CanchaService {
   constructor(@InjectModel(Cancha.name) private canchaModel: Model<CanchaDocument>) {}
 
   // src/cancha/cancha.service.ts
-async create(data: { numero: number; precio: number }): Promise<Cancha> {
+async create(data: { numero: number; precio: number; capacidad_maxima?: number }): Promise<Cancha> {
     // Validar que el número sea positivo
     if (!data.numero || data.numero <= 0) {
       throw new BadRequestException('El número de cancha debe ser mayor a 0');
@@ -31,7 +31,8 @@ async create(data: { numero: number; precio: number }): Promise<Cancha> {
     // Crear nueva cancha
     const nuevaCancha = new this.canchaModel({
       id_cancha: idCancha,
-      precio: data.precio
+      precio: data.precio,
+      capacidad_maxima: data.capacidad_maxima || 4
     });
 
     return nuevaCancha.save();
