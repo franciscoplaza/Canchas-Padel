@@ -198,7 +198,7 @@ export class ReservaService {
           throw new ForbiddenException('No tienes permiso para cancelar esta reserva.');
       }
       
-      // Solo aplicar la restricción de 7 días si NO es admin
+      // Solo aplicar la restricción de 7 días si es el usuario (no admin)
       if (usuarioQueCancela.rol !== 'admin') {
         const ahora = new Date();
         const fechaReserva = new Date(reserva.fecha_hora);
@@ -210,32 +210,34 @@ export class ReservaService {
         }
       }
 
-      // Resto del código permanece igual...
-      // Calcular monto total a devolver
-      const montoEquipamiento = reserva.equipamiento.reduce((acc, item) => acc + item.subtotal, 0);
-      const montoTotalDevuelto = reserva.precio + montoEquipamiento;
+      // Solo devolver el dinero si ES admin quien cancela
+      if (usuarioQueCancela.rol === 'admin') {
+        // Calcular monto total a devolver
+        const montoEquipamiento = reserva.equipamiento.reduce((acc, item) => acc + item.subtotal, 0);
+        const montoTotalDevuelto = reserva.precio + montoEquipamiento;
 
-      // Devolver saldo al usuario que hizo la reserva
-      const usuarioReserva = await this.usuarioModel.findOneAndUpdate(
-        { rut: reserva.id_usuario },
-        { 
-          $inc: { saldo: montoTotalDevuelto },
-          $push: { 
-            transacciones: {
-              monto: montoTotalDevuelto,
-              tipo: 'devolucion',
-              fecha: new Date(),
-              descripcion: `Devolución por cancelación de reserva ${reserva._id}`
+        // Devolver saldo al usuario que hizo la reserva
+        const usuarioReserva = await this.usuarioModel.findOneAndUpdate(
+          { rut: reserva.id_usuario },
+          { 
+            $inc: { saldo: montoTotalDevuelto },
+            $push: { 
+              transacciones: {
+                monto: montoTotalDevuelto,
+                tipo: 'devolucion',
+                fecha: new Date(),
+                descripcion: `Devolución por cancelación ADMIN de reserva`
+              }
             }
-          }
-        },
-        { session, new: true }
-      );
-      if(!usuarioReserva) {
-          throw new NotFoundException('No se encontró el usuario original de la reserva para devolver el saldo.');
+          },
+          { session, new: true }
+        );
+        if(!usuarioReserva) {
+            throw new NotFoundException('No se encontró el usuario original de la reserva para devolver el saldo.');
+        }
       }
 
-      // Devolver stock de equipamiento
+      // Devolver stock de equipamiento (siempre se hace)
       for (const item of reserva.equipamiento) {
         await this.equipamientoModel.findOneAndUpdate(
           { id_equipamiento: item.id_equipamiento },
@@ -248,21 +250,25 @@ export class ReservaService {
       await this.reservaModel.findByIdAndDelete(idReserva, { session });
       
       // Registrar en el historial
-       await this.historialService.registrar(
+      await this.historialService.registrar(
         usuarioQueCancela.id,
         TipoAccion.CANCELAR_RESERVA,
         'Reserva',
         idReserva,
         {
           descripcion: `Reserva para ${reserva.fecha_hora.toLocaleString()} fue cancelada por ${usuarioQueCancela.rut} (${usuarioQueCancela.rol}).`,
-          montoDevuelto: montoTotalDevuelto,
-          usuarioReserva: reserva.id_usuario
+          montoDevuelto: usuarioQueCancela.rol === 'admin' ? reserva.precio : 0,
+          usuarioReserva: reserva.id_usuario,
+          conReembolso: usuarioQueCancela.rol === 'admin'
         },
         session
       );
       
       await session.commitTransaction();
-      return { message: 'Reserva cancelada y saldo devuelto exitosamente.' };
+      return { 
+        message: 'Reserva cancelada exitosamente.',
+        conReembolso: usuarioQueCancela.rol === 'admin'
+      };
 
     } catch (error) {
       await session.abortTransaction();
