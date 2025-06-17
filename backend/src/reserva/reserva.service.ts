@@ -46,6 +46,23 @@ export class ReservaService {
       );
     }
 
+    const fechaReserva = new Date(fecha);
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0); // Normalizar la fecha actual
+    
+    const sieteDiasDespues = new Date(hoy);
+    sieteDiasDespues.setDate(hoy.getDate() + 7);
+    
+    if (fechaReserva < sieteDiasDespues) {
+        throw new BadRequestException('Solo puedes reservar con al menos 7 días de anticipación');
+    }
+
+    // Validar que no sea fin de semana (sábado=6, domingo=0)
+    const diaSemana = fechaReserva.getDay();
+    if (diaSemana === 0 || diaSemana === 6) {
+        throw new BadRequestException('No se permiten reservas los fines de semana (sábado y domingo)');
+    }
+
     // Validar equipamiento
     let totalEquipamiento = 0;
     const equipamientoDetalle: {
