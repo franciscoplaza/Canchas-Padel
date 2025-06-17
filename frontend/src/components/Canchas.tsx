@@ -348,18 +348,24 @@ const Canchas = () => {
                       )}
                     </td>
                     <td>
-                      {editingId === cancha._id ? (
+                      {editingId === cancha._id ? ( 
+                        
                         <input
                           type="number"
                           min="1"
                           value={editData.capacidad_maxima}
-                          onChange={(e) => {console.log("Nuevo valor:", e.target.value); setEditData({...editData, capacidad_maxima: Number(e.target.value)});
-}}                          className="precio-input"
+                          onChange={(e) => {
+                            const nuevoValor = Number(e.target.value)
+                            console.log("Capacidad cambiada a:", nuevoValor)
+                            setEditData({ ...editData, capacidad_maxima: nuevoValor })
+                          }}
+                          className="precio-input"
                         />
                       ) : (
                         `${cancha.capacidad_maxima} personas`
                       )}
                     </td>
+
                     <td className="acciones-cell">
                       {editingId === cancha._id ? (
                         <>
