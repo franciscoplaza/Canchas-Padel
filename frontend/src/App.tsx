@@ -15,6 +15,8 @@ import Registro from './components/Registro';
 //------------------------
 import SaldoUsuario from './components/SaldoUsuario';
 
+import Historial from './components/historial';
+
 function App() {
   return (
     <Router>
@@ -32,6 +34,7 @@ function App() {
           <Route path="/" element={<Navigate to="/login" />} />
           <Route path="/admin/canchas" element={<Canchas />} />
           <Route path="/admin/equipamiento" element={<GestionarEquipamiento />} />
+          <Route path="/admin/historial" element={<Historial />} />
           
         </Routes>
       </div>

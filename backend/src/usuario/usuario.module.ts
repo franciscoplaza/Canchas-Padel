@@ -4,9 +4,11 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Usuario, UsuarioSchema } from './usuario.schema';
 import { UsuarioService } from './usuario.service';
 import { UsuarioController } from './usuario.controller';
+import { HistorialModule } from '../historial/historial.module';
 
 @Module({
-  imports: [MongooseModule.forFeature([{ name: Usuario.name, schema: UsuarioSchema }])],
+  imports: [MongooseModule.forFeature([{ name: Usuario.name, schema: UsuarioSchema }]),
+  HistorialModule],
   providers: [UsuarioService],
   controllers: [UsuarioController],
   exports: [UsuarioService],

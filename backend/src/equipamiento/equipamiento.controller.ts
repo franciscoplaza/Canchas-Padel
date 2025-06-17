@@ -8,12 +8,19 @@ import {
   Delete, 
   Param, 
   UseGuards, 
-  NotFoundException 
+  NotFoundException,
+  Req // <-- 1. Importar Req
 } from '@nestjs/common';
 import { EquipamientoService } from './equipamiento.service';
 import { Equipamiento } from './equipamiento.schema';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-
+import { Request } from 'express'; // <-- 2. Importar Request
+ interface RequestWithUser extends Request {
+  user: {
+    userId: string;
+    username: string; // y cualquier otra propiedad que tengas en el payload del token
+  };
+}
 @Controller('equipamiento')
 export class EquipamientoController {
   constructor(private readonly equipamientoService: EquipamientoService) {}
@@ -21,12 +28,12 @@ export class EquipamientoController {
   @Post()
   @UseGuards(JwtAuthGuard)
   async create(
-    @Body('nombre') nombre: string,
-    @Body('stock') stock: number,
-    @Body('tipo') tipo: string,
-    @Body('costo') costo: number
+    // Se agrupan los datos en un solo objeto 'data'
+    @Body() data: { nombre: string, stock: number, tipo: string, costo: number },
+    @Req() req: RequestWithUser, // Se añade para obtener el request
   ) {
-    return this.equipamientoService.create({ nombre, stock, tipo, costo });
+    const adminId = (req.user as any).userId; // Se obtiene el ID del admin
+    return this.equipamientoService.create(data, adminId); // Se pasa el adminId al servicio
   }
 
   @Get()
@@ -40,17 +47,20 @@ export class EquipamientoController {
   }
 
   @Put(':id')
-    @UseGuards(JwtAuthGuard)
-    async updateEquipamiento(
+  @UseGuards(JwtAuthGuard)
+  async updateEquipamiento(
     @Param('id') id: string,
-    @Body() updateData: { stock?: number; costo?: number }
-    ) {
-    return this.equipamientoService.update(id, updateData);
+    @Body() updateData: { stock?: number; costo?: number },
+    @Req() req: RequestWithUser, // Se añade para obtener el request
+  ) {
+    const adminId = (req.user as any).userId; // Se obtiene el ID del admin
+    return this.equipamientoService.update(id, updateData, adminId); // Se pasa el adminId
   }
 
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
-  async remove(@Param('id') id: string) {
-    return this.equipamientoService.remove(id);
+  async remove(@Param('id') id: string, @Req() req: RequestWithUser) { // Se añade para obtener el request
+    const adminId = (req.user as any).userId; // Se obtiene el ID del admin
+    return this.equipamientoService.remove(id, adminId); // Se pasa el adminId
   }
 }

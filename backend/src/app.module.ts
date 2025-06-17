@@ -17,6 +17,7 @@ import { AcompananteModule } from './acompanante/acompanante.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { EmailService } from './email/email.service';
 import { ReminderService } from './reminder/reminder.service';
+import { HistorialModule } from './historial/historial.module';
 
 @Module({
   imports: [
@@ -28,7 +29,8 @@ import { ReminderService } from './reminder/reminder.service';
     ReservaModule,    // Asegúrate de que ReservaModule está aquí
     UsuarioModule,    // Agrega UsuarioModule
     CanchaModule,
-    EquipamientoModule,     
+    EquipamientoModule,    
+    HistorialModule, 
     MongooseModule.forFeature([
       { name: Usuario.name, schema: UsuarioSchema },
       { name: Cancha.name, schema: CanchaSchema },

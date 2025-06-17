@@ -107,6 +107,21 @@ const OpcionesAdmin = () => {
               </button>
             </div>
           </div>
+          {/* --- TARJETA NUEVA PARA EL HISTORIAL --- */}
+          <div className="admin-card">
+            <div className="card-icon historial-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+              </svg>
+            </div>
+            <div className="card-content">
+              <h2 className="card-title">Historial de Acciones</h2>
+              <p className="card-description">Revise todas las acciones importantes realizadas en el sistema.</p>
+              <button onClick={() => navigate("/admin/historial")} className="admin-btn historial-btn">
+                Ver Historial
+              </button>
+            </div>
+          </div>
         </div>
         
 

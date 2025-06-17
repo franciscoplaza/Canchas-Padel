@@ -1,5 +1,5 @@
 // backend/src/reserva/reserva.controller.ts
-import { Controller, Get, UseGuards, Request, Post, Body, Param } from '@nestjs/common';
+import { Controller, Get, UseGuards, Request, Post, Body,Delete, Param } from '@nestjs/common';
 import { ReservaService } from './reserva.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
@@ -39,5 +39,15 @@ export class ReservaController {
     // Aquí deberías verificar si el usuario es admin
     // Por simplicidad, asumimos que el middleware ya lo hizo
     return this.reservaService.obtenerTodasLasReservas();
+  }
+
+  // --- NUEVO ENDPOINT PARA CANCELAR RESERVA ---
+  @Delete(':id/cancelar')
+  @UseGuards(JwtAuthGuard)
+  async cancelarReserva(@Param('id') idReserva: string, @Request() req) {
+    // Obtenemos el ID del usuario que está autenticado desde el token
+    const idUsuario = req.user.userId;
+    // Llamamos al nuevo método en el servicio, pasándole ambos IDs
+    return this.reservaService.cancelarReserva(idReserva, idUsuario);
   }
 }
