@@ -44,6 +44,10 @@ export class Reserva {
 
   @Prop({ required: true, default: 0 })
   cantidad_acompanantes: number;
+
+  @Prop({ default: false })
+  recordatorioEnviado: boolean;
+
 }
 
 export const ReservaSchema = SchemaFactory.createForClass(Reserva);
