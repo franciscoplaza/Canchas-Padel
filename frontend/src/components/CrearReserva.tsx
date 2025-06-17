@@ -13,6 +13,7 @@ interface Cancha {
 interface Equipamiento {
   _id: string;
   id_equipamiento: string;
+  tipo: string;
   nombre: string;
   costo: number;
 }
@@ -28,6 +29,7 @@ const CrearReserva = () => {
   const [showEquipamientoModal, setShowEquipamientoModal] = useState<boolean>(false);
   const [equipamientoSeleccionado, setEquipamientoSeleccionado] = useState<{[key: string]: number}>({});
   const navigate = useNavigate();
+  const [filtroEquipamiento, setFiltroEquipamiento] = useState("");
 
   const HORARIOS_DISPONIBLES = [
     '09:00', '10:30', '12:00',
@@ -258,21 +260,38 @@ const CrearReserva = () => {
       </form>
 
       {showEquipamientoModal && (
-        <div className="modal-overlay">
-          <div className="equipamiento-modal">
-            <h2>Seleccionar Equipamiento</h2>
-            <table>
-              <thead>
-                <tr>
-                  <th>Equipamiento</th>
-                  <th>Costo Unitario</th>
-                  <th>Cantidad</th>
-                </tr>
-              </thead>
-              <tbody>
-                {equipamientos.map(equip => (
+      <div className="modal-overlay">
+        <div className="equipamiento-modal">
+          <h2>Seleccionar Equipamiento</h2>
+
+          {/* Barra de búsqueda */}
+          <input
+            type="text"
+            placeholder="Buscar por nombre o tipo..."
+            value={filtroEquipamiento}
+            onChange={(e) => setFiltroEquipamiento(e.target.value)}
+            style={{ marginBottom: "10px", width: "100%", padding: "5px" }}
+          />
+
+          <table>
+            <thead>
+              <tr>
+                <th>Equipamiento</th>
+                <th>Tipo</th>
+                <th>Costo Unitario</th>
+                <th>Cantidad</th>
+              </tr>
+            </thead>
+            <tbody>
+              {equipamientos
+                .filter(equip =>
+                  equip.nombre.toLowerCase().includes(filtroEquipamiento.toLowerCase()) ||
+                  (equip.tipo && equip.tipo.toLowerCase().includes(filtroEquipamiento.toLowerCase()))
+                )
+                .map(equip => (
                   <tr key={equip._id}>
                     <td>{equip.nombre}</td>
+                    <td>{equip.tipo}</td>
                     <td>${equip.costo.toLocaleString()}</td>
                     <td>
                       <input
@@ -283,18 +302,21 @@ const CrearReserva = () => {
                       />
                     </td>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-            <div className="modal-total">
-              Total Equipamiento: ${calcularTotalEquipamiento().toLocaleString()}
-            </div>
-            <div className="modal-actions">
-              <button onClick={() => setShowEquipamientoModal(false)}>Cerrar</button>
-            </div>
+                ))
+              }
+            </tbody>
+          </table>
+
+          <div className="modal-total">
+            Total Equipamiento: ${calcularTotalEquipamiento().toLocaleString()}
+          </div>
+          <div className="modal-actions">
+            <button onClick={() => setShowEquipamientoModal(false)}>Cerrar</button>
           </div>
         </div>
-      )}
+      </div>
+    )}
+
 
       {showAcompanantesModal && (
         <div className="modal-overlay">

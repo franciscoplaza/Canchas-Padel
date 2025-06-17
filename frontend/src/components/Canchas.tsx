@@ -353,8 +353,8 @@ const Canchas = () => {
                           type="number"
                           min="1"
                           value={editData.capacidad_maxima}
-                          onChange={(e) => setEditData({...editData, capacidad_maxima: Number(e.target.value)})}
-                          className="precio-input"
+                          onChange={(e) => {console.log("Nuevo valor:", e.target.value); setEditData({...editData, capacidad_maxima: Number(e.target.value)});
+}}                          className="precio-input"
                         />
                       ) : (
                         `${cancha.capacidad_maxima} personas`
