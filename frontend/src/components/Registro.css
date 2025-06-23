@@ -1,0 +1,171 @@
+/* Aseguramos que todo el documento tenga fondo blanco */
+html,
+body {
+  background-color: #f1f3f4;
+  margin: 0;
+  padding: 0;
+  font-family: "Google Sans", "Noto Sans", "Noto Sans JP", "Noto Sans KR", "Noto Naskh Arabic", "Noto Sans Thai",
+    "Noto Sans Hebrew", "Noto Sans Bengali", sans-serif;
+  color: #202124;
+}
+
+.registro-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.registro-card {
+  background: white;
+  padding: 70px 60px; /* Aumentado de 60px 50px */
+  width: 100%;
+  max-width: 650px; /* Aumentado de 550px */
+  border-radius: 16px; /* Aumentado de 12px */
+  border: 1px solid #dadce0;
+  box-shadow: 0 6px 30px rgba(0, 0, 0, 0.15); /* Sombra más pronunciada */
+}
+
+.registro-header {
+  text-align: center;
+  margin-bottom: 50px; /* Aumentado de 40px */
+}
+
+.ucn-logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 38px; /* Aumentado de 32px */
+  font-weight: 500;
+  margin-bottom: 24px; /* Aumentado de 20px */
+  gap: 8px; /* Aumentado de 6px */
+}
+
+.ucn-text {
+  color: #1a73e8; /* Azul de Google */
+}
+
+.registro-title {
+  color: #202124;
+  margin: 0 0 12px; /* Aumentado de 10px */
+  font-size: 36px; /* Aumentado de 30px */
+  font-weight: 400;
+}
+
+.registro-subtitle {
+  color: #5f6368;
+  font-size: 20px; /* Aumentado de 18px */
+  margin: 0;
+  font-weight: 400;
+}
+
+.registro-error {
+  color: #d93025; /* Rojo de Google */
+  background-color: #fce8e6;
+  padding: 18px 24px; /* Aumentado de 15px 20px */
+  border-radius: 8px; /* Aumentado de 6px */
+  margin-bottom: 36px; /* Aumentado de 30px */
+  font-size: 18px; /* Aumentado de 16px */
+}
+
+.registro-form {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Adaptado del estilo de login-form */
+.form-group {
+  margin-bottom: 36px; /* Mismo valor que en Login.css */
+}
+
+.form-label {
+  font-weight: 500;
+  color: #5f6368;
+  font-size: 18px; /* Mismo valor que en Login.css */
+  display: block;
+  margin-bottom: 12px; /* Mismo valor que en Login.css */
+  white-space: nowrap; /* Evita saltos de línea */
+}
+
+.form-input {
+  width: 100%;
+  padding: 18px 20px; /* Mismo valor que en Login.css */
+  border: 1px solid #dadce0;
+  border-radius: 8px; /* Mismo valor que en Login.css */
+  font-size: 20px; /* Mismo valor que en Login.css */
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #1a73e8;
+  box-shadow: 0 3px 6px 0 rgba(26, 115, 232, 0.3); /* Mismo valor que en Login.css */
+}
+
+.registro-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 16px; /* Mismo valor que en Login.css */
+}
+
+.signin-link {
+  color: #1a73e8;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 18px; /* Mismo valor que en Login.css */
+}
+
+.signin-link:hover {
+  text-decoration: underline;
+}
+
+.registro-button {
+  background-color: #1a73e8;
+  color: white;
+  border: none;
+  padding: 16px 36px; /* Mismo valor que en Login.css */
+  border-radius: 8px; /* Mismo valor que en Login.css */
+  font-size: 18px; /* Mismo valor que en Login.css */
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  text-transform: none;
+  letter-spacing: 0.25px;
+}
+
+.registro-button:hover {
+  background-color: #1765cc;
+  box-shadow: 0 3px 6px 0 rgba(26, 115, 232, 0.3); /* Mismo valor que en Login.css */
+}
+
+.registro-button:disabled {
+  background-color: #dadce0;
+  color: #5f6368;
+  cursor: not-allowed;
+}
+
+.registro-footer {
+  text-align: center;
+  margin-top: 70px; /* Mismo valor que en Login.css */
+  color: #5f6368;
+  font-size: 16px; /* Mismo valor que en Login.css */
+  line-height: 1.5;
+}
+
+/* Responsive adjustments */
+@media (max-width: 700px) {
+  /* Mismo valor que en Login.css */
+  .registro-card {
+    padding: 40px 30px; /* Mismo valor que en Login.css */
+    border-radius: 0;
+    box-shadow: none;
+    border: none;
+  }
+
+  .form-label {
+    white-space: normal; /* Permitir saltos de línea en móviles */
+  }
+}

@@ -1,0 +1,186 @@
+/* Aseguramos que todo el documento tenga fondo blanco */
+html,
+body {
+  background-color: #f1f3f4;
+  margin: 0;
+  padding: 0;
+  font-family: "Google Sans", "Noto Sans", "Noto Sans JP", "Noto Sans KR", "Noto Naskh Arabic", "Noto Sans Thai",
+    "Noto Sans Hebrew", "Noto Sans Bengali", sans-serif;
+  color: #202124;
+}
+
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.login-card {
+  background: white;
+  padding: 70px 60px; /* Aumentado de 60px 50px */
+  width: 100%;
+  max-width: 650px; /* Aumentado de 550px */
+  border-radius: 16px; /* Aumentado de 12px */
+  border: 1px solid #dadce0;
+  box-shadow: 0 6px 30px rgba(0, 0, 0, 0.15); /* Sombra más pronunciada */
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 50px; /* Aumentado de 40px */
+}
+
+.ucn-logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 38px; /* Aumentado de 32px */
+  font-weight: 500;
+  margin-bottom: 24px; /* Aumentado de 20px */
+  gap: 8px; /* Aumentado de 6px */
+}
+
+.ucn-text {
+  color: #1a73e8; /* Azul de Google */
+}
+
+.login-title {
+  color: #202124;
+  margin: 0 0 12px; /* Aumentado de 10px */
+  font-size: 36px; /* Aumentado de 30px */
+  font-weight: 400;
+}
+
+.login-subtitle {
+  color: #5f6368;
+  font-size: 20px; /* Aumentado de 18px */
+  margin: 0;
+  font-weight: 400;
+}
+
+.login-error {
+  color: #d93025; /* Rojo de Google */
+  background-color: #fce8e6;
+  padding: 18px 24px; /* Aumentado de 15px 20px */
+  border-radius: 8px; /* Aumentado de 6px */
+  margin-bottom: 36px; /* Aumentado de 30px */
+  font-size: 18px; /* Aumentado de 16px */
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group {
+  margin-bottom: 36px; /* Aumentado de 30px */
+}
+
+.form-label {
+  font-weight: 500;
+  color: #5f6368;
+  font-size: 18px; /* Aumentado de 16px */
+  display: block;
+  margin-bottom: 12px; /* Aumentado de 10px */
+  white-space: nowrap; /* Evita saltos de línea */
+}
+
+.form-input {
+  width: 100%;
+  padding: 18px 20px; /* Aumentado de 16px 18px */
+  border: 1px solid #dadce0;
+  border-radius: 8px; /* Aumentado de 6px */
+  font-size: 20px; /* Aumentado de 18px */
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #1a73e8;
+  box-shadow: 0 3px 6px 0 rgba(26, 115, 232, 0.3); /* Sombra más pronunciada */
+}
+
+.forgot-password {
+  text-align: left;
+  margin-bottom: 36px; /* Aumentado de 30px */
+}
+
+.forgot-link {
+  color: #1a73e8;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 18px; /* Aumentado de 16px */
+}
+
+.forgot-link:hover {
+  text-decoration: underline;
+}
+
+.login-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 16px; /* Aumentado de 12px */
+}
+
+.create-account-link {
+  color: #1a73e8;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 18px; /* Aumentado de 16px */
+}
+
+.create-account-link:hover {
+  text-decoration: underline;
+}
+
+.login-button {
+  background-color: #1a73e8;
+  color: white;
+  border: none;
+  padding: 16px 36px; /* Aumentado de 14px 30px */
+  border-radius: 8px; /* Aumentado de 6px */
+  font-size: 18px; /* Aumentado de 16px */
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  text-transform: none;
+  letter-spacing: 0.25px;
+}
+
+.login-button:hover {
+  background-color: #1765cc;
+  box-shadow: 0 3px 6px 0 rgba(26, 115, 232, 0.3); /* Sombra más pronunciada */
+}
+
+.login-button:disabled {
+  background-color: #dadce0;
+  color: #5f6368;
+  cursor: not-allowed;
+}
+
+.login-footer {
+  text-align: center;
+  margin-top: 70px; /* Aumentado de 60px */
+  color: #5f6368;
+  font-size: 16px; /* Aumentado de 14px */
+  line-height: 1.5;
+}
+
+/* Responsive adjustments */
+@media (max-width: 700px) {
+  /* Aumentado de 600px */
+  .login-card {
+    padding: 40px 30px; /* Aumentado de 30px 20px */
+    border-radius: 0;
+    box-shadow: none;
+    border: none;
+  }
+
+  .form-label {
+    white-space: normal; /* Permitir saltos de línea en móviles */
+  }
+}
